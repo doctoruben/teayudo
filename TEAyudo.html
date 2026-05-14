@@ -17,6 +17,10 @@
     --accent-persona: #F97B6B;
     --accent-accion: #6BC47E;
     --accent-objeto: #F5C842;
+    --accent-social: #B07FE8;
+    --accent-necesidad: #F97B6B;
+    --accent-comida: #F4A340;
+    --accent-lugar: #4ABFD9;
     --bg: #F8F6FF;
     --card-bg: #FFFFFF;
     --text: #2D2A3E;
@@ -135,9 +139,13 @@
     flex-shrink: 0;
   }
 
-  .persona-color { background: #FFF0EE; }
-  .accion-color  { background: #EEFBF0; }
-  .objeto-color  { background: #FFFBEB; }
+  .persona-color   { background: #FFF0EE; }
+  .accion-color    { background: #EEFBF0; }
+  .objeto-color    { background: #FFFBEB; }
+  .social-color    { background: #F3EEFF; }
+  .necesidad-color { background: #FFF0EE; }
+  .comida-color    { background: #FFF8EE; }
+  .lugar-color     { background: #EEF9FF; }
 
   .section-label {
     flex: 1;
@@ -449,12 +457,20 @@
     align-items: center;
     gap: 5px;
   }
-  .tab-btn.persona { background: #FFF0EE; color: #C0432E; border-color: #FFC4BB; }
-  .tab-btn.persona.active { background: #F97B6B; color: #fff; border-color: #F97B6B; }
-  .tab-btn.accion { background: #EEFBF0; color: #1A7C33; border-color: #A3E8B0; }
-  .tab-btn.accion.active { background: #6BC47E; color: #fff; border-color: #6BC47E; }
-  .tab-btn.objeto { background: #FFFBEB; color: #8A6A00; border-color: #F5D77A; }
-  .tab-btn.objeto.active { background: #F5C842; color: #fff; border-color: #F5C842; }
+  .tab-btn.persona   { background: #FFF0EE; color: #C0432E; border-color: #FFC4BB; }
+  .tab-btn.persona.active   { background: #F97B6B; color: #fff; border-color: #F97B6B; }
+  .tab-btn.accion    { background: #EEFBF0; color: #1A7C33; border-color: #A3E8B0; }
+  .tab-btn.accion.active    { background: #6BC47E; color: #fff; border-color: #6BC47E; }
+  .tab-btn.objeto    { background: #FFFBEB; color: #8A6A00; border-color: #F5D77A; }
+  .tab-btn.objeto.active    { background: #F5C842; color: #fff; border-color: #F5C842; }
+  .tab-btn.social    { background: #F3EEFF; color: #6B35BF; border-color: #C9AAEE; }
+  .tab-btn.social.active    { background: #B07FE8; color: #fff; border-color: #B07FE8; }
+  .tab-btn.necesidad { background: #FFF0EE; color: #C0432E; border-color: #FFC4BB; }
+  .tab-btn.necesidad.active { background: #F97B6B; color: #fff; border-color: #F97B6B; }
+  .tab-btn.comida    { background: #FFF8EE; color: #9A5A00; border-color: #F5CFA0; }
+  .tab-btn.comida.active    { background: #F4A340; color: #fff; border-color: #F4A340; }
+  .tab-btn.lugar     { background: #EEF9FF; color: #006A8A; border-color: #A0DCEE; }
+  .tab-btn.lugar.active     { background: #4ABFD9; color: #fff; border-color: #4ABFD9; }
 
   .add-form {
     display: flex;
@@ -1233,12 +1249,24 @@
 <main>
   <div class="main">
 
-    <!-- PERSONA -->
+    <div class="section-card">
+      <div class="section-header" onclick="openPicker('social')">
+        <div class="section-emoji social-color">👋</div>
+        <div class="section-label">
+          <h2>Sociales</h2>
+          <div class="section-selected empty" id="social-label">Toca para elegir…</div>
+        </div>
+        <div class="section-pictos-strip" id="social-pictos-strip">
+          <div class="section-picto placeholder" id="social-picto-preview">+</div>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+    </div>
     <div class="section-card">
       <div class="section-header" onclick="openPicker('persona')">
         <div class="section-emoji persona-color">🧑</div>
         <div class="section-label">
-          <h2>Persona</h2>
+          <h2>Personas</h2>
           <div class="section-selected empty" id="persona-label">Toca para elegir…</div>
         </div>
         <div class="section-pictos-strip" id="persona-pictos-strip">
@@ -1247,13 +1275,11 @@
         <span class="chevron">›</span>
       </div>
     </div>
-
-    <!-- ACCIÓN -->
     <div class="section-card">
       <div class="section-header" onclick="openPicker('accion')">
         <div class="section-emoji accion-color">🎯</div>
         <div class="section-label">
-          <h2>Acción</h2>
+          <h2>Acciones</h2>
           <div class="section-selected empty" id="accion-label">Toca para elegir…</div>
         </div>
         <div class="section-pictos-strip" id="accion-pictos-strip">
@@ -1262,8 +1288,6 @@
         <span class="chevron">›</span>
       </div>
     </div>
-
-    <!-- OBJETO -->
     <div class="section-card">
       <div class="section-header" onclick="openPicker('objeto')">
         <div class="section-emoji objeto-color">🎁</div>
@@ -1273,6 +1297,45 @@
         </div>
         <div class="section-pictos-strip" id="objeto-pictos-strip">
           <div class="section-picto placeholder" id="objeto-picto-preview">+</div>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-header" onclick="openPicker('necesidad')">
+        <div class="section-emoji necesidad-color">❤️</div>
+        <div class="section-label">
+          <h2>Necesidades</h2>
+          <div class="section-selected empty" id="necesidad-label">Toca para elegir…</div>
+        </div>
+        <div class="section-pictos-strip" id="necesidad-pictos-strip">
+          <div class="section-picto placeholder" id="necesidad-picto-preview">+</div>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-header" onclick="openPicker('comida')">
+        <div class="section-emoji comida-color">🍎</div>
+        <div class="section-label">
+          <h2>Comida / Bebida</h2>
+          <div class="section-selected empty" id="comida-label">Toca para elegir…</div>
+        </div>
+        <div class="section-pictos-strip" id="comida-pictos-strip">
+          <div class="section-picto placeholder" id="comida-picto-preview">+</div>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-header" onclick="openPicker('lugar')">
+        <div class="section-emoji lugar-color">📍</div>
+        <div class="section-label">
+          <h2>Lugares</h2>
+          <div class="section-selected empty" id="lugar-label">Toca para elegir…</div>
+        </div>
+        <div class="section-pictos-strip" id="lugar-pictos-strip">
+          <div class="section-picto placeholder" id="lugar-picto-preview">+</div>
         </div>
         <span class="chevron">›</span>
       </div>
@@ -1315,9 +1378,13 @@
 
       <!-- SECCIÓN TABS -->
       <div class="modal-section-tabs">
-        <button class="tab-btn persona active" onclick="setModalTab('persona')">🧑 Persona</button>
-        <button class="tab-btn accion" onclick="setModalTab('accion')">🎯 Acción</button>
+        <button class="tab-btn social active" onclick="setModalTab('social')">👋 Sociales</button>
+        <button class="tab-btn persona" onclick="setModalTab('persona')">🧑 Personas</button>
+        <button class="tab-btn accion" onclick="setModalTab('accion')">🎯 Acciones</button>
         <button class="tab-btn objeto" onclick="setModalTab('objeto')">🎁 Objeto</button>
+        <button class="tab-btn necesidad" onclick="setModalTab('necesidad')">❤️ Necesidades</button>
+        <button class="tab-btn comida" onclick="setModalTab('comida')">🍎 Comida</button>
+        <button class="tab-btn lugar" onclick="setModalTab('lugar')">📍 Lugares</button>
       </div>
 
       <!-- FORMULARIO AÑADIR -->
@@ -1406,10 +1473,10 @@ const ARASAAC_BASE = 'https://api.arasaac.org/v1';
 const IMG_BASE = 'https://static.arasaac.org/pictograms';
 
 // ---- STATE ----
-let DB = { persona: [], accion: [], objeto: [] };
+let DB = { social: [], persona: [], accion: [], objeto: [], necesidad: [], comida: [], lugar: [] };
 // selected is now an array per section (multi-picto)
-let selected = { persona: [], accion: [], objeto: [] };
-let currentTab = 'persona';
+let selected = { social: [], persona: [], accion: [], objeto: [], necesidad: [], comida: [], lugar: [] };
+let currentTab = 'social';
 let currentPickerSection = null;
 let searchTimeout = null;
 let selectedPreviewId = null;
@@ -1423,8 +1490,9 @@ function loadDB() {
   if (stored) {
     try { DB = JSON.parse(stored); } catch(e) {}
   }
-  if (!DB.persona || !DB.accion || !DB.objeto) {
-    DB = { persona: [], accion: [], objeto: [] };
+  if (!DB.persona || !DB.accion || !DB.objeto || !DB.social || !DB.necesidad || !DB.comida || !DB.lugar) {
+    const prev = DB;
+    DB = { social: prev.social||[], persona: prev.persona||[], accion: prev.accion||[], objeto: prev.objeto||[], necesidad: prev.necesidad||[], comida: prev.comida||[], lugar: prev.lugar||[] };
   }
 }
 
@@ -1559,9 +1627,13 @@ function renderSavedList() {
 
 // ---- PICKER ----
 const sectionMeta = {
-  persona: { title: '¿Quién?', subtitle: 'Elige una persona (puedes añadir varios)', emoji: '🧑' },
-  accion:  { title: '¿Qué hace?', subtitle: 'Elige una acción (puedes añadir varios)', emoji: '🎯' },
-  objeto:  { title: '¿Con qué / Cómo?', subtitle: 'Elige objetos o estados (puedes añadir varios)', emoji: '🎁' }
+  social:    { title: '¿Qué decir?',      subtitle: 'Elige una expresión social',         emoji: '👋' },
+  persona:   { title: '¿Quién?',           subtitle: 'Elige una persona',                  emoji: '🧑' },
+  accion:    { title: '¿Qué hace?',        subtitle: 'Elige una acción',                   emoji: '🎯' },
+  objeto:    { title: '¿Con qué / Cómo?', subtitle: 'Elige objetos o estados',             emoji: '🎁' },
+  necesidad: { title: '¿Qué necesitas?',  subtitle: 'Elige una necesidad',                 emoji: '❤️' },
+  comida:    { title: '¿Qué quieres?',    subtitle: 'Elige comida o bebida',               emoji: '🍎' },
+  lugar:     { title: '¿Dónde?',          subtitle: 'Elige un lugar',                      emoji: '📍' },
 };
 
 function openPicker(section) {
@@ -1647,7 +1719,7 @@ function removePictoFromSection(event, section, id) {
 }
 
 function updateResultButton() {
-  const anySelected = selected.persona.length || selected.accion.length || selected.objeto.length;
+  const anySelected = ['social','persona','accion','objeto','necesidad','comida','lugar'].some(s => selected[s].length > 0);
   document.getElementById('resultado-btn').disabled = !anySelected;
 }
 
@@ -1696,7 +1768,7 @@ EJEMPLOS INCORRECTOS (nunca hagas esto):
 async function hablar() {
   const parts = [];
   const pictos = [];
-  ['persona', 'accion', 'objeto'].forEach(s => {
+  ['social', 'persona', 'accion', 'objeto', 'necesidad', 'comida', 'lugar'].forEach(s => {
     selected[s].forEach(p => {
       parts.push(p.word);
       pictos.push(p);
@@ -2140,7 +2212,7 @@ async function groq(messages, max_tokens = 200) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer __GROQ_API_KEY__`
     },
-    body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens, messages })
+    body: JSON.stringify({ model: 'llama-3.1-8b-instant', max_tokens, messages })
   });
   if (!response.ok) {
     const err = await response.text();
