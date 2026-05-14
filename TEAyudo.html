@@ -1232,6 +1232,100 @@
   }
   .transcribe-fullscreen-btn:active { background: #DDD8FF; border-color: var(--primary); }
 
+  /* MANAGE CATEGORIES */
+  .manage-cats-btn {
+    width: 100%;
+    padding: 9px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1.5px dashed #C5BEFF;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+  }
+  .manage-cats-btn:active { background: #F0EEFF; border-color: var(--primary); color: var(--primary); }
+  .cat-manage-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #F8F6FF;
+    border-radius: 12px;
+    border: 1.5px solid #EDE9FF;
+    margin-bottom: 8px;
+  }
+  .cat-manage-emoji { font-size: 22px; flex-shrink: 0; }
+  .cat-manage-info { flex: 1; min-width: 0; }
+  .cat-manage-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .cat-manage-count { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+  .cat-manage-del {
+    background: #FFF0EE;
+    border: 1.5px solid #FFCFCC;
+    color: #E24B4A;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.1s;
+  }
+  .cat-manage-del:active { background: #FFDAD8; }
+  .cat-add-form {
+    background: #F0EEFF;
+    border-radius: 14px;
+    padding: 14px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1.5px solid #C5BEFF;
+  }
+  .cat-add-title { font-size: 13px; font-weight: 800; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; }
+  .cat-add-row { display: flex; gap: 8px; align-items: center; }
+  .cat-emoji-input {
+    width: 52px;
+    height: 44px;
+    font-size: 22px;
+    text-align: center;
+    border: 2px solid #C5BEFF;
+    border-radius: 10px;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .cat-name-input {
+    flex: 1;
+    height: 44px;
+    padding: 0 12px;
+    border: 2px solid #C5BEFF;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+  }
+  .cat-name-input:focus { border-color: var(--primary); }
+  .cat-add-btn {
+    width: 100%;
+    padding: 11px;
+    background: linear-gradient(135deg, var(--primary), #7C5FBF);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .cat-add-btn:active { transform: scale(0.97); }
+
+
 </style>
 </head>
 <body>
@@ -1239,7 +1333,7 @@
 <!-- HEADER -->
 <header class="header">
   <div class="logo">
-    <div class="logo-icon">🧩</div>
+    <div class="logo-icon">🗣️</div>
     <span class="logo-text">TEAyudo</span>
   </div>
   <button class="settings-btn" onclick="openSettings()" aria-label="Configuración">⚙️</button>
@@ -1249,97 +1343,7 @@
 <main>
   <div class="main">
 
-    <div class="section-card">
-      <div class="section-header" onclick="openPicker('social')">
-        <div class="section-emoji social-color">👋</div>
-        <div class="section-label">
-          <h2>Sociales</h2>
-          <div class="section-selected empty" id="social-label">Toca para elegir…</div>
-        </div>
-        <div class="section-pictos-strip" id="social-pictos-strip">
-          <div class="section-picto placeholder" id="social-picto-preview">+</div>
-        </div>
-        <span class="chevron">›</span>
-      </div>
-    </div>
-    <div class="section-card">
-      <div class="section-header" onclick="openPicker('persona')">
-        <div class="section-emoji persona-color">🧑</div>
-        <div class="section-label">
-          <h2>Personas</h2>
-          <div class="section-selected empty" id="persona-label">Toca para elegir…</div>
-        </div>
-        <div class="section-pictos-strip" id="persona-pictos-strip">
-          <div class="section-picto placeholder" id="persona-picto-preview">+</div>
-        </div>
-        <span class="chevron">›</span>
-      </div>
-    </div>
-    <div class="section-card">
-      <div class="section-header" onclick="openPicker('accion')">
-        <div class="section-emoji accion-color">🏃</div>
-        <div class="section-label">
-          <h2>Acciones</h2>
-          <div class="section-selected empty" id="accion-label">Toca para elegir…</div>
-        </div>
-        <div class="section-pictos-strip" id="accion-pictos-strip">
-          <div class="section-picto placeholder" id="accion-picto-preview">+</div>
-        </div>
-        <span class="chevron">›</span>
-      </div>
-    </div>
-    <div class="section-card">
-      <div class="section-header" onclick="openPicker('objeto')">
-        <div class="section-emoji objeto-color">🎁</div>
-        <div class="section-label">
-          <h2>Objeto / Estado</h2>
-          <div class="section-selected empty" id="objeto-label">Toca para elegir…</div>
-        </div>
-        <div class="section-pictos-strip" id="objeto-pictos-strip">
-          <div class="section-picto placeholder" id="objeto-picto-preview">+</div>
-        </div>
-        <span class="chevron">›</span>
-      </div>
-    </div>
-    <div class="section-card">
-      <div class="section-header" onclick="openPicker('necesidad')">
-        <div class="section-emoji necesidad-color">❤️</div>
-        <div class="section-label">
-          <h2>Necesidades</h2>
-          <div class="section-selected empty" id="necesidad-label">Toca para elegir…</div>
-        </div>
-        <div class="section-pictos-strip" id="necesidad-pictos-strip">
-          <div class="section-picto placeholder" id="necesidad-picto-preview">+</div>
-        </div>
-        <span class="chevron">›</span>
-      </div>
-    </div>
-    <div class="section-card">
-      <div class="section-header" onclick="openPicker('comida')">
-        <div class="section-emoji comida-color">🍎</div>
-        <div class="section-label">
-          <h2>Comida / Bebida</h2>
-          <div class="section-selected empty" id="comida-label">Toca para elegir…</div>
-        </div>
-        <div class="section-pictos-strip" id="comida-pictos-strip">
-          <div class="section-picto placeholder" id="comida-picto-preview">+</div>
-        </div>
-        <span class="chevron">›</span>
-      </div>
-    </div>
-    <div class="section-card">
-      <div class="section-header" onclick="openPicker('lugar')">
-        <div class="section-emoji lugar-color">🏠</div>
-        <div class="section-label">
-          <h2>Lugares</h2>
-          <div class="section-selected empty" id="lugar-label">Toca para elegir…</div>
-        </div>
-        <div class="section-pictos-strip" id="lugar-pictos-strip">
-          <div class="section-picto placeholder" id="lugar-picto-preview">+</div>
-        </div>
-        <span class="chevron">›</span>
-      </div>
-    </div>
+    <div id="sections-container"></div>
 
   </div>
 
@@ -1376,16 +1380,9 @@
     </div>
     <div class="modal-body">
 
-      <!-- SECCIÓN TABS -->
-      <div class="modal-section-tabs">
-        <button class="tab-btn social active" onclick="setModalTab('social')">👋 Sociales</button>
-        <button class="tab-btn persona" onclick="setModalTab('persona')">🧑 Personas</button>
-        <button class="tab-btn accion" onclick="setModalTab('accion')">🏃 Acciones</button>
-        <button class="tab-btn objeto" onclick="setModalTab('objeto')">🎁 Objeto</button>
-        <button class="tab-btn necesidad" onclick="setModalTab('necesidad')">❤️ Necesidades</button>
-        <button class="tab-btn comida" onclick="setModalTab('comida')">🍎 Comida</button>
-        <button class="tab-btn lugar" onclick="setModalTab('lugar')">🏠 Lugares</button>
-      </div>
+      <!-- SECCIÓN TABS (dinámico) -->
+      <div class="modal-section-tabs" id="modal-section-tabs"></div>
+      <button class="manage-cats-btn" onclick="openManageCats()">⚙️ Gestionar categorías</button>
 
       <!-- FORMULARIO AÑADIR -->
       <div class="add-form">
@@ -1408,6 +1405,19 @@
         <div class="saved-list" id="saved-list"></div>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<!-- MANAGE CATEGORIES MODAL -->
+<div class="transcribe-overlay" id="manage-cats-overlay" onclick="if(event.target===this)closeManageCats()">
+  <div class="transcribe-modal">
+    <div class="modal-handle"></div>
+    <div class="fav-modal-header">
+      <span class="fav-modal-title">⚙️ Gestionar categorías</span>
+      <button class="modal-close" onclick="closeManageCats()">✕</button>
+    </div>
+    <div class="fav-modal-body" id="manage-cats-body">
     </div>
   </div>
 </div>
@@ -1472,11 +1482,22 @@
 const ARASAAC_BASE = 'https://api.arasaac.org/v1';
 const IMG_BASE = 'https://static.arasaac.org/pictograms';
 
+// ---- DEFAULT CATEGORIES ----
+const DEFAULT_CATEGORIES = [
+  { key: 'social',    emoji: '👋', name: 'Sociales',       color: '#B07FE8', bg: '#F3EEFF', text: '#6B35BF', border: '#C9AAEE' },
+  { key: 'persona',   emoji: '🧑', name: 'Personas',       color: '#F97B6B', bg: '#FFF0EE', text: '#C0432E', border: '#FFC4BB' },
+  { key: 'accion',    emoji: '🎯', name: 'Acciones',       color: '#6BC47E', bg: '#EEFBF0', text: '#1A7C33', border: '#A3E8B0' },
+  { key: 'objeto',    emoji: '🎁', name: 'Objeto / Estado',color: '#F5C842', bg: '#FFFBEB', text: '#8A6A00', border: '#F5D77A' },
+  { key: 'necesidad', emoji: '❤️', name: 'Necesidades',    color: '#F97B6B', bg: '#FFF0EE', text: '#C0432E', border: '#FFC4BB' },
+  { key: 'comida',    emoji: '🍎', name: 'Comida / Bebida',color: '#F4A340', bg: '#FFF8EE', text: '#9A5A00', border: '#F5CFA0' },
+  { key: 'lugar',     emoji: '📍', name: 'Lugares',        color: '#4ABFD9', bg: '#EEF9FF', text: '#006A8A', border: '#A0DCEE' },
+];
+
 // ---- STATE ----
-let DB = { social: [], persona: [], accion: [], objeto: [], necesidad: [], comida: [], lugar: [] };
-// selected is now an array per section (multi-picto)
-let selected = { social: [], persona: [], accion: [], objeto: [], necesidad: [], comida: [], lugar: [] };
-let currentTab = 'social';
+let DB = {};
+let selected = {};
+let categories = [];
+let currentTab = '';
 let currentPickerSection = null;
 let searchTimeout = null;
 let selectedPreviewId = null;
@@ -1484,16 +1505,57 @@ let selectedPreviewUrl = null;
 let selectedPreviewKeyword = null;
 let lastNaturalText = ''; // AI conjugated version
 
+// ---- RENDER MAIN SECTIONS ----
+function renderSectionsMain() {
+  const container = document.getElementById('sections-container');
+  container.innerHTML = '';
+  categories.forEach(cat => {
+    const card = document.createElement('div');
+    card.className = 'section-card';
+    card.innerHTML = `
+      <div class="section-header" onclick="openPicker('${cat.key}')">
+        <div class="section-emoji" style="background:${cat.bg}">${cat.emoji}</div>
+        <div class="section-label">
+          <h2>${cat.name}</h2>
+          <div class="section-selected empty" id="${cat.key}-label">Toca para elegir…</div>
+        </div>
+        <div class="section-pictos-strip" id="${cat.key}-pictos-strip">
+          <div class="section-picto placeholder" id="${cat.key}-picto-preview">+</div>
+        </div>
+        <span class="chevron">›</span>
+      </div>`;
+    container.appendChild(card);
+    // Re-render selection state if any
+    if (selected[cat.key] && selected[cat.key].length) {
+      updateSectionUI(cat.key);
+    }
+  });
+}
+
 // ---- INIT ----
 function loadDB() {
+  // Load categories
+  const storedCats = localStorage.getItem('teayudo_categories');
+  if (storedCats) {
+    try { categories = JSON.parse(storedCats); } catch(e) { categories = [...DEFAULT_CATEGORIES]; }
+  } else {
+    categories = [...DEFAULT_CATEGORIES];
+  }
+  // Load pictos DB
   const stored = localStorage.getItem('teayudo_db');
   if (stored) {
     try { DB = JSON.parse(stored); } catch(e) {}
   }
-  if (!DB.persona || !DB.accion || !DB.objeto || !DB.social || !DB.necesidad || !DB.comida || !DB.lugar) {
-    const prev = DB;
-    DB = { social: prev.social||[], persona: prev.persona||[], accion: prev.accion||[], objeto: prev.objeto||[], necesidad: prev.necesidad||[], comida: prev.comida||[], lugar: prev.lugar||[] };
-  }
+  // Ensure all category keys exist in DB and selected
+  categories.forEach(c => {
+    if (!DB[c.key]) DB[c.key] = [];
+    if (!selected[c.key]) selected[c.key] = [];
+  });
+  if (!currentTab && categories.length) currentTab = categories[0].key;
+}
+
+function saveCategories() {
+  localStorage.setItem('teayudo_categories', JSON.stringify(categories));
 }
 
 function saveDB() {
@@ -1519,8 +1581,24 @@ function pictoUrl(id) {
 function openSettings() {
   document.getElementById('settings-overlay').classList.add('open');
   document.body.classList.add('no-scroll');
+  renderModalTabs();
   renderSavedList();
   resetAddForm();
+}
+
+function renderModalTabs() {
+  const container = document.getElementById('modal-section-tabs');
+  container.innerHTML = '';
+  categories.forEach((cat, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (cat.key === currentTab ? ' active' : '');
+    btn.dataset.key = cat.key;
+    btn.style.cssText = `background:${cat.bg};color:${cat.text};border-color:${cat.border};`;
+    if (cat.key === currentTab) btn.style.cssText += `background:${cat.color};color:#fff;border-color:${cat.color};`;
+    btn.textContent = `${cat.emoji} ${cat.name}`;
+    btn.onclick = () => setModalTab(cat.key);
+    container.appendChild(btn);
+  });
 }
 
 function closeSettings() {
@@ -1535,7 +1613,8 @@ function handleOverlayClick(e) {
 function setModalTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.tab-btn.${tab}`).classList.add('active');
+  const active = document.querySelector(`.tab-btn[data-key="${tab}"]`);
+  if (active) active.classList.add('active');
   renderSavedList();
   resetAddForm();
 }
@@ -1626,19 +1705,14 @@ function renderSavedList() {
 }
 
 // ---- PICKER ----
-const sectionMeta = {
-  social:    { title: '¿Qué decir?',      subtitle: 'Elige una expresión social',         emoji: '👋' },
-  persona:   { title: '¿Quién?',           subtitle: 'Elige una persona',                  emoji: '🧑' },
-  accion:    { title: '¿Qué hace?',        subtitle: 'Elige una acción',                   emoji: '🎯' },
-  objeto:    { title: '¿Con qué / Cómo?', subtitle: 'Elige objetos o estados',             emoji: '🎁' },
-  necesidad: { title: '¿Qué necesitas?',  subtitle: 'Elige una necesidad',                 emoji: '❤️' },
-  comida:    { title: '¿Qué quieres?',    subtitle: 'Elige comida o bebida',               emoji: '🍎' },
-  lugar:     { title: '¿Dónde?',          subtitle: 'Elige un lugar',                      emoji: '📍' },
-};
+function getSectionMeta(key) {
+  const cat = categories.find(c => c.key === key) || { emoji: '📋', name: key };
+  return { title: cat.name, subtitle: `Elige ${cat.name.toLowerCase()}`, emoji: cat.emoji };
+}
 
 function openPicker(section) {
   currentPickerSection = section;
-  const meta = sectionMeta[section];
+  const meta = getSectionMeta(section);
   document.getElementById('picker-title').textContent = meta.emoji + ' ' + meta.title;
   document.getElementById('picker-subtitle').textContent = meta.subtitle;
   renderPickerGrid(section);
@@ -1719,7 +1793,7 @@ function removePictoFromSection(event, section, id) {
 }
 
 function updateResultButton() {
-  const anySelected = ['social','persona','accion','objeto','necesidad','comida','lugar'].some(s => selected[s].length > 0);
+  const anySelected = categories.some(c => selected[c.key] && selected[c.key].length > 0);
   document.getElementById('resultado-btn').disabled = !anySelected;
 }
 
@@ -1768,7 +1842,7 @@ EJEMPLOS INCORRECTOS (nunca hagas esto):
 async function hablar() {
   const parts = [];
   const pictos = [];
-  ['social', 'persona', 'accion', 'objeto', 'necesidad', 'comida', 'lugar'].forEach(s => {
+  categories.map(c => c.key).forEach(s => {
     selected[s].forEach(p => {
       parts.push(p.word);
       pictos.push(p);
@@ -2247,6 +2321,108 @@ function closeFullscreen() {
   document.getElementById('fullscreen-pictos').classList.remove('open');
 }
 
+// ---- MANAGE CATEGORIES ----
+function openManageCats() {
+  document.getElementById('manage-cats-overlay').classList.add('open');
+  renderManageCats();
+}
+
+function closeManageCats() {
+  document.getElementById('manage-cats-overlay').classList.remove('open');
+}
+
+function renderManageCats() {
+  const body = document.getElementById('manage-cats-body');
+  body.innerHTML = '';
+
+  // List existing categories
+  categories.forEach((cat, i) => {
+    const pictoCount = (DB[cat.key] || []).length;
+    const item = document.createElement('div');
+    item.className = 'cat-manage-item';
+    item.innerHTML = `
+      <div class="cat-manage-emoji">${cat.emoji}</div>
+      <div class="cat-manage-info">
+        <div class="cat-manage-name">${cat.name}</div>
+        <div class="cat-manage-count">${pictoCount} pictograma${pictoCount !== 1 ? 's' : ''}</div>
+      </div>
+      <button class="cat-manage-del" onclick="deleteCategory('${cat.key}')" title="Eliminar categoría">🗑️</button>
+    `;
+    body.appendChild(item);
+  });
+
+  // Add new category form
+  const form = document.createElement('div');
+  form.className = 'cat-add-form';
+  form.innerHTML = `
+    <div class="cat-add-title">➕ Nueva categoría</div>
+    <div class="cat-add-row">
+      <input class="cat-emoji-input" id="new-cat-emoji" type="text" placeholder="😀" maxlength="2">
+      <input class="cat-name-input" id="new-cat-name" type="text" placeholder="Nombre de la categoría" autocorrect="off">
+    </div>
+    <button class="cat-add-btn" onclick="addCategory()">Crear categoría</button>
+  `;
+  body.appendChild(form);
+}
+
+function addCategory() {
+  const emoji = document.getElementById('new-cat-emoji').value.trim() || '📋';
+  const name  = document.getElementById('new-cat-name').value.trim();
+  if (!name) { alert('Escribe un nombre para la categoría'); return; }
+
+  // Generate unique key from name
+  const key = 'cat_' + name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
+
+  const COLORS = [
+    { color: '#4ABFD9', bg: '#EEF9FF', text: '#006A8A', border: '#A0DCEE' },
+    { color: '#6BC47E', bg: '#EEFBF0', text: '#1A7C33', border: '#A3E8B0' },
+    { color: '#B07FE8', bg: '#F3EEFF', text: '#6B35BF', border: '#C9AAEE' },
+    { color: '#F4A340', bg: '#FFF8EE', text: '#9A5A00', border: '#F5CFA0' },
+    { color: '#F97B6B', bg: '#FFF0EE', text: '#C0432E', border: '#FFC4BB' },
+    { color: '#F5C842', bg: '#FFFBEB', text: '#8A6A00', border: '#F5D77A' },
+  ];
+  const col = COLORS[categories.length % COLORS.length];
+
+  categories.push({ key, emoji, name, ...col });
+  DB[key] = [];
+  selected[key] = [];
+
+  saveCategories();
+  saveDB();
+  renderManageCats();
+  renderSectionsMain();
+  renderModalTabs();
+  currentTab = key;
+  setModalTab(key);
+}
+
+function deleteCategory(key) {
+  const cat = categories.find(c => c.key === key);
+  const pictoCount = (DB[key] || []).length;
+  const msg = pictoCount > 0
+    ? `¿Eliminar "${cat.name}"? Borrará también sus ${pictoCount} pictogramas.`
+    : `¿Eliminar la categoría "${cat.name}"?`;
+  if (!confirm(msg)) return;
+
+  // Remove from all state
+  categories = categories.filter(c => c.key !== key);
+  delete DB[key];
+  delete selected[key];
+
+  // If deleted tab was active, switch to first
+  if (currentTab === key) {
+    currentTab = categories.length ? categories[0].key : '';
+  }
+
+  saveCategories();
+  saveDB();
+  renderManageCats();
+  renderSectionsMain();
+  renderModalTabs();
+  updateResultButton();
+  if (currentTab) setModalTab(currentTab);
+}
+
 // ---- KEYBOARD ----
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
@@ -2258,6 +2434,7 @@ document.addEventListener('keydown', e => {
 
 // ---- BOOT ----
 loadDB();
+renderSectionsMain();
 updateResultButton();
 </script>
 
