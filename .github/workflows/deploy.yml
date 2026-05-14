@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-- name: Inyectar API key
+      - name: Inyectar API key
         run: |
           python3 -c "
           content = open('TEAyudo.html').read()
