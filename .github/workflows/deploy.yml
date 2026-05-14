@@ -18,9 +18,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Inyectar API key
+- name: Inyectar API key
         run: |
-          sed -i 's/__GROQ_API_KEY__/${{ secrets.GROQ_API_KEY }}/g' TEAyudo.html
+          python3 -c "
+          content = open('TEAyudo.html').read()
+          content = content.replace('__GROQ_API_KEY__', '${{ secrets.GROQ_API_KEY }}')
+          open('TEAyudo.html', 'w').write(content)
+          print('Key inyectada OK')
+          "
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
