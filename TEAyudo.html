@@ -383,7 +383,7 @@
     z-index: 300;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s;
@@ -394,11 +394,11 @@
 
   .modal {
     background: #fff;
-    border-radius: 24px 24px 0 0;
+    border-radius: 0 0 24px 24px;
     padding: 0 0 32px;
-    transform: translateY(100%);
+    transform: translateY(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    max-height: 88dvh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
   }
@@ -457,20 +457,7 @@
     align-items: center;
     gap: 5px;
   }
-  .tab-btn.persona   { background: #FFF0EE; color: #C0432E; border-color: #FFC4BB; }
-  .tab-btn.persona.active   { background: #F97B6B; color: #fff; border-color: #F97B6B; }
-  .tab-btn.accion    { background: #EEFBF0; color: #1A7C33; border-color: #A3E8B0; }
-  .tab-btn.accion.active    { background: #6BC47E; color: #fff; border-color: #6BC47E; }
-  .tab-btn.objeto    { background: #FFFBEB; color: #8A6A00; border-color: #F5D77A; }
-  .tab-btn.objeto.active    { background: #F5C842; color: #fff; border-color: #F5C842; }
-  .tab-btn.social    { background: #F3EEFF; color: #6B35BF; border-color: #C9AAEE; }
-  .tab-btn.social.active    { background: #B07FE8; color: #fff; border-color: #B07FE8; }
-  .tab-btn.necesidad { background: #FFF0EE; color: #C0432E; border-color: #FFC4BB; }
-  .tab-btn.necesidad.active { background: #F97B6B; color: #fff; border-color: #F97B6B; }
-  .tab-btn.comida    { background: #FFF8EE; color: #9A5A00; border-color: #F5CFA0; }
-  .tab-btn.comida.active    { background: #F4A340; color: #fff; border-color: #F4A340; }
-  .tab-btn.lugar     { background: #EEF9FF; color: #006A8A; border-color: #A0DCEE; }
-  .tab-btn.lugar.active     { background: #4ABFD9; color: #fff; border-color: #4ABFD9; }
+  /* All tabs neutral by default, active gets color via inline style from renderModalTabs */
 
   .add-form {
     display: flex;
@@ -1360,34 +1347,47 @@
 
   /* ÁMBITO BAR */
   .ambito-bar {
-    padding: 4px 12px 8px;
+    padding: 6px 16px 10px;
     background: var(--card-bg);
     border-bottom: 1.5px solid #EDE9FF;
   }
-  .ambito-scroll {
+  .ambito-select-wrap {
     display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 2px;
+    align-items: center;
+    background: #F0EEFF;
+    border: 2px solid #C5BEFF;
+    border-radius: 14px;
+    padding: 0 14px;
+    gap: 10px;
+    height: 44px;
+    position: relative;
   }
-  .ambito-scroll::-webkit-scrollbar { display: none; }
-  .ambito-chip {
-    padding: 5px 14px;
-    border-radius: 20px;
-    border: 1.5px solid #EDE9FF;
-    background: #fff;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-muted);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.12s, border-color 0.12s, color 0.12s;
+  .ambito-select-icon {
+    font-size: 20px;
     flex-shrink: 0;
+    pointer-events: none;
   }
-  .ambito-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-  .ambito-chip:active { opacity: 0.8; }
+  .ambito-select {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--primary-dark);
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  .ambito-select-arrow {
+    font-size: 14px;
+    color: var(--primary);
+    pointer-events: none;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
 
   /* TRADUCATEA VIEW */
   .traducTEA-wrap {
@@ -1510,7 +1510,11 @@
 </header>
 <!-- ÁMBITO BAR (only in TEAyudo) -->
 <div class="ambito-bar" id="ambito-bar">
-  <div class="ambito-scroll" id="ambito-scroll"></div>
+  <div class="ambito-select-wrap">
+    <span class="ambito-select-icon" id="ambito-select-icon">🌐</span>
+    <select class="ambito-select" id="ambito-select" onchange="selectAmbito(this.value)"></select>
+    <span class="ambito-select-arrow">▾</span>
+  </div>
 </div>
 
 <!-- MAIN TEAyudo -->
@@ -1848,11 +1852,14 @@ function renderModalTabs(containerId) {
   if (!container) return;
   container.innerHTML = '';
   categories.forEach((cat) => {
+    const isActive = cat.key === currentTab;
     const btn = document.createElement('button');
-    btn.className = 'tab-btn' + (cat.key === currentTab ? ' active' : '');
+    btn.className = 'tab-btn' + (isActive ? ' active' : '');
     btn.dataset.key = cat.key;
-    btn.style.cssText = `background:${cat.bg};color:${cat.text};border-color:${cat.border};`;
-    if (cat.key === currentTab) btn.style.cssText += `background:${cat.color};color:#fff;border-color:${cat.color};`;
+    // Inactive: all same neutral grey; Active: category color
+    btn.style.cssText = isActive
+      ? `background:${cat.color};color:#fff;border-color:${cat.color};`
+      : `background:#F4F3F8;color:#7A7A9A;border-color:#E0DCEF;`;
     btn.textContent = `${cat.emoji} ${cat.name}`;
     btn.onclick = () => setModalTab(cat.key);
     container.appendChild(btn);
@@ -1916,7 +1923,7 @@ async function onSearchInput() {
         div.classList.add('sel');
         selectedPreviewId = r._id;
         selectedPreviewUrl = url;
-        selectedPreviewKeyword = document.getElementById('search-input').value.trim() || keyword;
+        selectedPreviewKeyword = keyword; // always use the pictogram's real keyword
         document.getElementById('add-btn').disabled = false;
       };
       wrap.appendChild(div);
@@ -1938,9 +1945,9 @@ function addPicto() {
 }
 
 function deletePicto(section, id) {
-  DB[section] = DB[section].filter(p => p.id !== id);
-  // Remove from selected if present
-  selected[section] = selected[section].filter(p => p.id !== id);
+  // Compare as strings to handle both numeric and string ids
+  DB[section] = DB[section].filter(p => String(p.id) !== String(id));
+  selected[section] = (selected[section] || []).filter(p => String(p.id) !== String(id));
   updateSectionUI(section);
   updateResultButton();
   saveDB();
@@ -1958,7 +1965,7 @@ function renderSavedList() {
   items.forEach(p => {
     const div = document.createElement('div');
     div.className = 'saved-item';
-    div.innerHTML = `<img src="${p.url}" alt="${p.word}"><span class="saved-item-name">${p.word}</span><button class="del-item-btn" onclick="deletePicto('${currentTab}', ${p.id})" aria-label="Eliminar">🗑️</button>`;
+    div.innerHTML = `<img src="${p.url}" alt="${p.word}"><span class="saved-item-name">${p.word}</span><button class="del-item-btn" onclick="deletePicto('${currentTab}', '${p.id}')" aria-label="Eliminar">🗑️</button>`;
     list.appendChild(div);
   });
 }
@@ -2702,15 +2709,19 @@ function switchApp(app) {
 
 // ---- ÁMBITO BAR ----
 function renderAmbitoBar() {
-  const scroll = document.getElementById('ambito-scroll');
-  scroll.innerHTML = '';
+  const sel = document.getElementById('ambito-select');
+  const icon = document.getElementById('ambito-select-icon');
+  if (!sel) return;
+  sel.innerHTML = '';
   ambitos.forEach(amb => {
-    const chip = document.createElement('button');
-    chip.className = 'ambito-chip' + (amb.key === activeAmbito ? ' active' : '');
-    chip.textContent = `${amb.emoji} ${amb.name}`;
-    chip.onclick = () => selectAmbito(amb.key);
-    scroll.appendChild(chip);
+    const opt = document.createElement('option');
+    opt.value = amb.key;
+    opt.textContent = `${amb.emoji} ${amb.name}`;
+    opt.selected = amb.key === activeAmbito;
+    sel.appendChild(opt);
   });
+  const active = ambitos.find(a => a.key === activeAmbito);
+  if (icon && active) icon.textContent = active.emoji;
 }
 
 function selectAmbito(key) {
