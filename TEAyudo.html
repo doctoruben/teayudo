@@ -654,7 +654,7 @@
     z-index: 400;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s;
@@ -664,11 +664,11 @@
   .fav-overlay.open { opacity: 1; pointer-events: all; }
   .fav-modal {
     background: #fff;
-    border-radius: 24px 24px 0 0;
+    border-radius: 0 0 24px 24px;
     padding: 0 0 32px;
-    transform: translateY(100%);
+    transform: translateY(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    max-height: 80dvh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
   }
@@ -862,7 +862,7 @@
     z-index: 400;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s;
@@ -872,11 +872,11 @@
   .transcribe-overlay.open { opacity: 1; pointer-events: all; }
   .transcribe-modal {
     background: #fff;
-    border-radius: 24px 24px 0 0;
+    border-radius: 0 0 24px 24px;
     padding: 0 0 32px;
-    transform: translateY(100%);
+    transform: translateY(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    max-height: 88dvh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
   }
@@ -1877,8 +1877,11 @@ function handleOverlayClick(e) {
 
 function setModalTab(tab) {
   currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll(`.tab-btn[data-key="${tab}"]`).forEach(b => b.classList.add('active'));
+  // Re-render all tab containers that exist
+  ['pictos-tabs', 'modal-section-tabs'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.children.length) renderModalTabs(id);
+  });
   renderSavedList();
   resetAddForm();
 }
@@ -2599,13 +2602,43 @@ function closeManageCats() {
   document.getElementById('manage-cats-overlay').classList.remove('open');
 }
 
+let editingCatKey = null;
+
+// Emoji suggestions based on common category keywords
+function suggestEmojis(name) {
+  const n = name.toLowerCase();
+  const map = [
+    [['saludo','social','hola','adios','gracias','por favor'], ['👋','🤝','😊','🙏','💬','😀']],
+    [['persona','gente','familia','amigo','niño','mama','papa','yo','nosotros'], ['🧑','👨','👩','👶','👨‍👩‍👧','🧒','👫','🏠']],
+    [['accion','hacer','jugar','correr','saltar','mover','actividad'], ['🎯','⚡','🏃','🤸','🎮','💪','🏋️']],
+    [['objeto','cosa','juguete','herramienta','material'], ['🎁','📦','🧸','🔧','📚','✏️','🎨']],
+    [['necesidad','necesito','quiero','ayuda','dolor','cansado','hambre','sed'], ['❤️','🆘','😣','💊','🤒','😴','😰']],
+    [['comida','comer','beber','fruta','bebida','desayuno','almuerzo','cena'], ['🍎','🥗','🍕','🥤','🍌','🥪','🍽️','🥛']],
+    [['lugar','sitio','ir','casa','colegio','parque','tienda','hospital'], ['📍','🏠','🏫','🏥','🛒','🌳','🚗','🏢']],
+    [['medico','salud','hospital','doctor','enfermero'], ['🏥','💊','🩺','🩹','💉','🧬']],
+    [['colegio','escuela','clase','estudio','aprender'], ['🏫','📚','✏️','🎒','📝','🔬']],
+    [['hogar','casa','habitacion','cocina','baño','dormir'], ['🏠','🛋️','🛁','🍳','🛏️','🪴']],
+    [['emocion','sentimiento','feliz','triste','enfadado','miedo'], ['😊','😢','😠','😨','🥰','😮']],
+    [['tiempo','clima','lluvia','sol','frio','calor'], ['☀️','🌧️','❄️','🌈','⛅','🌡️']],
+    [['ropa','vestir','zapato','camisa'], ['👕','👗','👟','🧥','🧢','👒']],
+    [['deporte','juego','pelota','nadar','bici'], ['⚽','🏊','🚴','🎾','🏀','🎯']],
+    [['musica','cantar','bailar','instrumento'], ['🎵','🎶','🎸','🥁','🎤','💃']],
+    [['animal','mascota','perro','gato'], ['🐶','🐱','🐾','🦁','🐰','🐸']],
+  ];
+  for (const [keywords, emojis] of map) {
+    if (keywords.some(k => n.includes(k))) return emojis;
+  }
+  return ['📋','🔖','📌','⭐','🏷️','💡','🎪','🌟'];
+}
+
 function renderManageCats() {
   const body = document.getElementById('manage-cats-body');
   body.innerHTML = '';
 
-  // List existing categories
-  categories.forEach((cat, i) => {
+  categories.forEach((cat) => {
     const pictoCount = (DB[cat.key] || []).length;
+    const isEditing = editingCatKey === cat.key;
+
     const item = document.createElement('div');
     item.className = 'cat-manage-item';
     item.innerHTML = `
@@ -2614,9 +2647,33 @@ function renderManageCats() {
         <div class="cat-manage-name">${cat.name}</div>
         <div class="cat-manage-count">${pictoCount} pictograma${pictoCount !== 1 ? 's' : ''}</div>
       </div>
-      <button class="cat-manage-del" onclick="deleteCategory('${cat.key}')" title="Eliminar categoría">🗑️</button>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="cat-edit-btn" onclick="toggleEditCat('${cat.key}')" title="Editar">✏️</button>
+        <button class="cat-manage-del" onclick="deleteCategory('${cat.key}')" title="Eliminar">🗑️</button>
+      </div>
     `;
     body.appendChild(item);
+
+    if (isEditing) {
+      const suggestions = suggestEmojis(cat.name);
+      const panel = document.createElement('div');
+      panel.className = 'cat-add-form';
+      panel.style.marginBottom = '8px';
+      panel.innerHTML = `
+        <div class="cat-add-title">✏️ Editar categoría</div>
+        <div class="cat-add-row">
+          <input class="cat-emoji-input" id="edit-cat-emoji" type="text" value="${cat.emoji}" maxlength="2">
+          <input class="cat-name-input" id="edit-cat-name" type="text" value="${cat.name}" autocorrect="off">
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Sugerencias de icono</div>
+        <div class="emoji-suggestions" id="emoji-suggestions">
+          ${suggestions.map(e => `<button class="emoji-suggestion-btn" onclick="document.getElementById('edit-cat-emoji').value='${e}';document.querySelectorAll('.emoji-suggestion-btn').forEach(b=>b.classList.remove('sel'));this.classList.add('sel')">${e}</button>`).join('')}
+        </div>
+        <button class="cat-add-btn" onclick="saveCatEdit('${cat.key}')">💾 Guardar cambios</button>
+        <button class="cat-add-btn" style="background:#F8F6FF;color:var(--text-muted);box-shadow:none;margin-top:4px;border:1.5px solid #EDE9FF;" onclick="toggleEditCat(null)">Cancelar</button>
+      `;
+      body.appendChild(panel);
+    }
   });
 
   // Add new category form
@@ -2626,11 +2683,42 @@ function renderManageCats() {
     <div class="cat-add-title">➕ Nueva categoría</div>
     <div class="cat-add-row">
       <input class="cat-emoji-input" id="new-cat-emoji" type="text" placeholder="😀" maxlength="2">
-      <input class="cat-name-input" id="new-cat-name" type="text" placeholder="Nombre de la categoría" autocorrect="off">
+      <input class="cat-name-input" id="new-cat-name" type="text" placeholder="Nombre de la categoría" autocorrect="off"
+        oninput="updateNewCatEmojiSuggestions(this.value)">
     </div>
+    <div class="emoji-suggestions" id="new-emoji-suggestions"></div>
     <button class="cat-add-btn" onclick="addCategory()">Crear categoría</button>
   `;
   body.appendChild(form);
+}
+
+function updateNewCatEmojiSuggestions(name) {
+  const container = document.getElementById('new-emoji-suggestions');
+  if (!container) return;
+  if (!name.trim()) { container.innerHTML = ''; return; }
+  const suggestions = suggestEmojis(name);
+  container.innerHTML = suggestions.map(e =>
+    `<button class="emoji-suggestion-btn" onclick="document.getElementById('new-cat-emoji').value='${e}';document.querySelectorAll('#new-emoji-suggestions .emoji-suggestion-btn').forEach(b=>b.classList.remove('sel'));this.classList.add('sel')">${e}</button>`
+  ).join('');
+}
+
+function toggleEditCat(key) {
+  editingCatKey = editingCatKey === key ? null : key;
+  renderManageCats();
+}
+
+function saveCatEdit(key) {
+  const cat = categories.find(c => c.key === key);
+  if (!cat) return;
+  const newEmoji = document.getElementById('edit-cat-emoji').value.trim() || cat.emoji;
+  const newName  = document.getElementById('edit-cat-name').value.trim() || cat.name;
+  cat.emoji = newEmoji;
+  cat.name  = newName;
+  editingCatKey = null;
+  saveCategories();
+  renderManageCats();
+  renderSectionsMain();
+  renderAmbitoBar();
 }
 
 function addCategory() {
