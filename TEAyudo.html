@@ -1362,11 +1362,6 @@
     height: 44px;
     position: relative;
   }
-  .ambito-select-icon {
-    font-size: 20px;
-    flex-shrink: 0;
-    pointer-events: none;
-  }
   .ambito-select {
     flex: 1;
     border: none;
@@ -1511,7 +1506,6 @@
 <!-- ÁMBITO BAR (only in TEAyudo) -->
 <div class="ambito-bar" id="ambito-bar">
   <div class="ambito-select-wrap">
-    <span class="ambito-select-icon" id="ambito-select-icon">🌐</span>
     <select class="ambito-select" id="ambito-select" onchange="selectAmbito(this.value)"></select>
     <span class="ambito-select-arrow">▾</span>
   </div>
@@ -2604,31 +2598,28 @@ function closeManageCats() {
 
 let editingCatKey = null;
 
-// Emoji suggestions based on common category keywords
-function suggestEmojis(name) {
-  const n = name.toLowerCase();
-  const map = [
-    [['saludo','social','hola','adios','gracias','por favor'], ['👋','🤝','😊','🙏','💬','😀']],
-    [['persona','gente','familia','amigo','niño','mama','papa','yo','nosotros'], ['🧑','👨','👩','👶','👨‍👩‍👧','🧒','👫','🏠']],
-    [['accion','hacer','jugar','correr','saltar','mover','actividad'], ['🎯','⚡','🏃','🤸','🎮','💪','🏋️']],
-    [['objeto','cosa','juguete','herramienta','material'], ['🎁','📦','🧸','🔧','📚','✏️','🎨']],
-    [['necesidad','necesito','quiero','ayuda','dolor','cansado','hambre','sed'], ['❤️','🆘','😣','💊','🤒','😴','😰']],
-    [['comida','comer','beber','fruta','bebida','desayuno','almuerzo','cena'], ['🍎','🥗','🍕','🥤','🍌','🥪','🍽️','🥛']],
-    [['lugar','sitio','ir','casa','colegio','parque','tienda','hospital'], ['📍','🏠','🏫','🏥','🛒','🌳','🚗','🏢']],
-    [['medico','salud','hospital','doctor','enfermero'], ['🏥','💊','🩺','🩹','💉','🧬']],
-    [['colegio','escuela','clase','estudio','aprender'], ['🏫','📚','✏️','🎒','📝','🔬']],
-    [['hogar','casa','habitacion','cocina','baño','dormir'], ['🏠','🛋️','🛁','🍳','🛏️','🪴']],
-    [['emocion','sentimiento','feliz','triste','enfadado','miedo'], ['😊','😢','😠','😨','🥰','😮']],
-    [['tiempo','clima','lluvia','sol','frio','calor'], ['☀️','🌧️','❄️','🌈','⛅','🌡️']],
-    [['ropa','vestir','zapato','camisa'], ['👕','👗','👟','🧥','🧢','👒']],
-    [['deporte','juego','pelota','nadar','bici'], ['⚽','🏊','🚴','🎾','🏀','🎯']],
-    [['musica','cantar','bailar','instrumento'], ['🎵','🎶','🎸','🥁','🎤','💃']],
-    [['animal','mascota','perro','gato'], ['🐶','🐱','🐾','🦁','🐰','🐸']],
-  ];
-  for (const [keywords, emojis] of map) {
-    if (keywords.some(k => n.includes(k))) return emojis;
+// AI emoji suggestions
+let emojiSuggestTimeout = null;
+
+async function suggestEmojisAI(name, targetInputId, containerIdOrEl) {
+  if (!name || name.trim().length < 2) return;
+  const container = typeof containerIdOrEl === 'string'
+    ? document.getElementById(containerIdOrEl)
+    : containerIdOrEl;
+  if (!container) return;
+  container.innerHTML = '<span style="font-size:11px;color:var(--text-muted);font-weight:600;">✨ Buscando iconos…</span>';
+  try {
+    const result = await groq([
+      { role: 'system', content: 'Eres un asistente que sugiere emojis. Responde SOLO con 8 emojis separados por espacios, sin texto adicional.' },
+      { role: 'user', content: `Sugiere 8 emojis que representen visualmente una categoría llamada "${name}" para una app de comunicación aumentativa (AAC) para personas con TEA. Solo emojis, separados por espacios.` }
+    ], 60);
+    const emojis = result.trim().split(/\s+/).filter(e => e.length > 0).slice(0, 8);
+    container.innerHTML = emojis.map(e =>
+      `<button class="emoji-suggestion-btn" onclick="document.getElementById('${targetInputId}').value='${e}';this.closest('.emoji-suggestions').querySelectorAll('.emoji-suggestion-btn').forEach(b=>b.classList.remove('sel'));this.classList.add('sel')">${e}</button>`
+    ).join('');
+  } catch(err) {
+    container.innerHTML = '';
   }
-  return ['📋','🔖','📌','⭐','🏷️','💡','🎪','🌟'];
 }
 
 function renderManageCats() {
@@ -2655,7 +2646,6 @@ function renderManageCats() {
     body.appendChild(item);
 
     if (isEditing) {
-      const suggestions = suggestEmojis(cat.name);
       const panel = document.createElement('div');
       panel.className = 'cat-add-form';
       panel.style.marginBottom = '8px';
@@ -2665,14 +2655,14 @@ function renderManageCats() {
           <input class="cat-emoji-input" id="edit-cat-emoji" type="text" value="${cat.emoji}" maxlength="2">
           <input class="cat-name-input" id="edit-cat-name" type="text" value="${cat.name}" autocorrect="off">
         </div>
-        <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Sugerencias de icono</div>
-        <div class="emoji-suggestions" id="emoji-suggestions">
-          ${suggestions.map(e => `<button class="emoji-suggestion-btn" onclick="document.getElementById('edit-cat-emoji').value='${e}';document.querySelectorAll('.emoji-suggestion-btn').forEach(b=>b.classList.remove('sel'));this.classList.add('sel')">${e}</button>`).join('')}
-        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Sugerencias de icono ✨</div>
+        <div class="emoji-suggestions" id="emoji-suggestions-edit-${cat.key}"></div>
         <button class="cat-add-btn" onclick="saveCatEdit('${cat.key}')">💾 Guardar cambios</button>
         <button class="cat-add-btn" style="background:#F8F6FF;color:var(--text-muted);box-shadow:none;margin-top:4px;border:1.5px solid #EDE9FF;" onclick="toggleEditCat(null)">Cancelar</button>
       `;
       body.appendChild(panel);
+      // Trigger AI emoji suggestions
+      suggestEmojisAI(cat.name, `edit-cat-emoji`, `emoji-suggestions-edit-${cat.key}`);
     }
   });
 
@@ -2684,7 +2674,7 @@ function renderManageCats() {
     <div class="cat-add-row">
       <input class="cat-emoji-input" id="new-cat-emoji" type="text" placeholder="😀" maxlength="2">
       <input class="cat-name-input" id="new-cat-name" type="text" placeholder="Nombre de la categoría" autocorrect="off"
-        oninput="updateNewCatEmojiSuggestions(this.value)">
+        oninput="clearTimeout(emojiSuggestTimeout);emojiSuggestTimeout=setTimeout(()=>suggestEmojisAI(this.value,'new-cat-emoji','new-emoji-suggestions'),600)">
     </div>
     <div class="emoji-suggestions" id="new-emoji-suggestions"></div>
     <button class="cat-add-btn" onclick="addCategory()">Crear categoría</button>
@@ -2692,15 +2682,7 @@ function renderManageCats() {
   body.appendChild(form);
 }
 
-function updateNewCatEmojiSuggestions(name) {
-  const container = document.getElementById('new-emoji-suggestions');
-  if (!container) return;
-  if (!name.trim()) { container.innerHTML = ''; return; }
-  const suggestions = suggestEmojis(name);
-  container.innerHTML = suggestions.map(e =>
-    `<button class="emoji-suggestion-btn" onclick="document.getElementById('new-cat-emoji').value='${e}';document.querySelectorAll('#new-emoji-suggestions .emoji-suggestion-btn').forEach(b=>b.classList.remove('sel'));this.classList.add('sel')">${e}</button>`
-  ).join('');
-}
+
 
 function toggleEditCat(key) {
   editingCatKey = editingCatKey === key ? null : key;
@@ -2798,7 +2780,6 @@ function switchApp(app) {
 // ---- ÁMBITO BAR ----
 function renderAmbitoBar() {
   const sel = document.getElementById('ambito-select');
-  const icon = document.getElementById('ambito-select-icon');
   if (!sel) return;
   sel.innerHTML = '';
   ambitos.forEach(amb => {
@@ -2808,8 +2789,7 @@ function renderAmbitoBar() {
     opt.selected = amb.key === activeAmbito;
     sel.appendChild(opt);
   });
-  const active = ambitos.find(a => a.key === activeAmbito);
-  if (icon && active) icon.textContent = active.emoji;
+
 }
 
 function selectAmbito(key) {
