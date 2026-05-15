@@ -645,6 +645,25 @@
     margin-bottom: 10px;
   }
   .fav-btn:active { background: #F0EEFF; border-color: var(--primary); }
+  .clear-btn {
+    width: 100%;
+    padding: 11px;
+    background: #FFF0EE;
+    color: #C0432E;
+    border: 2px solid #FFCFCC;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.12s, border-color 0.12s;
+    margin-bottom: 6px;
+  }
+  .clear-btn:active { background: #FFDAD8; border-color: #E24B4A; }
 
   /* FAVORITES MODAL */
   .fav-overlay {
@@ -1285,6 +1304,8 @@
   }
   .cat-name-input {
     flex: 1;
+    min-width: 0;
+    width: 0;
     height: 44px;
     padding: 0 12px;
     border: 2px solid #C5BEFF;
@@ -1295,6 +1316,7 @@
     color: var(--text);
     background: #fff;
     outline: none;
+    box-sizing: border-box;
   }
   .cat-name-input:focus { border-color: var(--primary); }
   .cat-add-btn {
@@ -1394,6 +1416,15 @@
 
   /* CONFIG HUB */
   .config-hub { display: flex; flex-direction: column; gap: 10px; padding: 4px 0; }
+  .config-hub-divider {
+    height: 1px;
+    background: #EDE9FF;
+    margin: 2px 0;
+  }
+  .config-hub-btn-secondary {
+    background: #F8F6FF;
+    opacity: 0.85;
+  }
   .config-hub-btn {
     display: flex;
     align-items: center;
@@ -1484,7 +1515,7 @@
   .ambito-cat-toggle.on .ambito-cat-toggle-check { opacity: 1; }
   .ambito-name-row { display: flex; gap: 8px; margin-bottom: 10px; }
   .ambito-name-emoji { width: 48px; height: 40px; font-size: 20px; text-align: center; border: 2px solid #C5BEFF; border-radius: 10px; background: #fff; }
-  .ambito-name-input { flex: 1; height: 40px; padding: 0 12px; border: 2px solid #C5BEFF; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--text); background: #fff; outline: none; }
+  .ambito-name-input { flex: 1; min-width: 0; width: 0; height: 40px; padding: 0 12px; border: 2px solid #C5BEFF; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--text); background: #fff; outline: none; box-sizing: border-box; }
   .ambito-save-btn { width: 100%; padding: 10px; background: linear-gradient(135deg, var(--primary), #7C5FBF); color: #fff; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer; margin-top: 10px; transition: transform 0.1s; }
   .ambito-save-btn:active { transform: scale(0.97); }
   .ambito-add-new-btn { width: 100%; padding: 9px; background: transparent; color: var(--text-muted); border: 1.5px dashed #C5BEFF; border-radius: 12px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 4px; transition: background 0.12s; }
@@ -1521,6 +1552,9 @@
       <span class="icon">🔊</span> Decir frase
     </button>
     <div class="ai-status" id="ai-status"></div>
+    <button class="clear-btn" id="clear-btn" onclick="limpiarSeleccion()" style="display:none">
+      🧹 Limpiar selección
+    </button>
     <button class="fav-btn" onclick="openFavModal()">⭐ Frases favoritas</button>
   </div>
 </main>
@@ -1560,21 +1594,33 @@
     </div>
     <div class="modal-body">
       <div class="config-hub">
-        <button class="config-hub-btn" onclick="closeSettings();openPictosModal()">
-          <span class="config-hub-icon">🖼️</span>
-          <span class="config-hub-label">Pictos</span>
-          <span class="config-hub-desc">Gestiona los pictogramas de cada categoría</span>
+        <button class="config-hub-btn" onclick="closeSettings();openAmbitosModal()">
+          <span class="config-hub-icon">🌐</span>
+          <span class="config-hub-label">Ámbitos</span>
+          <span class="config-hub-desc">Gestiona los contextos y sus categorías</span>
         </button>
         <button class="config-hub-btn" onclick="closeSettings();openManageCats()">
           <span class="config-hub-icon">🏷️</span>
           <span class="config-hub-label">Categorías</span>
           <span class="config-hub-desc">Añade, edita o elimina categorías</span>
         </button>
-        <button class="config-hub-btn" onclick="closeSettings();openAmbitosModal()">
-          <span class="config-hub-icon">🌐</span>
-          <span class="config-hub-label">Ámbitos</span>
-          <span class="config-hub-desc">Gestiona los contextos y sus categorías</span>
+        <button class="config-hub-btn" onclick="closeSettings();openPictosModal()">
+          <span class="config-hub-icon">🖼️</span>
+          <span class="config-hub-label">Pictos</span>
+          <span class="config-hub-desc">Gestiona los pictogramas de cada categoría</span>
         </button>
+        <div class="config-hub-divider"></div>
+        <button class="config-hub-btn config-hub-btn-secondary" onclick="exportarDatos()">
+          <span class="config-hub-icon">📤</span>
+          <span class="config-hub-label">Exportar datos</span>
+          <span class="config-hub-desc">Guarda tu configuración en un fichero</span>
+        </button>
+        <button class="config-hub-btn config-hub-btn-secondary" onclick="importarDatos()">
+          <span class="config-hub-icon">📥</span>
+          <span class="config-hub-label">Importar datos</span>
+          <span class="config-hub-desc">Carga configuración desde un fichero</span>
+        </button>
+        <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="procesarImportacion(event)">
       </div>
     </div>
   </div>
@@ -2058,6 +2104,15 @@ function removePictoFromSection(event, section, id) {
 function updateResultButton() {
   const anySelected = categories.some(c => selected[c.key] && selected[c.key].length > 0);
   document.getElementById('resultado-btn').disabled = !anySelected;
+  const clearBtn = document.getElementById('clear-btn');
+  if (clearBtn) clearBtn.style.display = anySelected ? '' : 'none';
+}
+
+function limpiarSeleccion() {
+  categories.forEach(c => { selected[c.key] = []; });
+  renderSectionsMain();
+  updateResultButton();
+  document.getElementById('ai-status').textContent = '';
 }
 
 // ---- AI CONJUGATION ----
@@ -2614,9 +2669,21 @@ async function suggestEmojisAI(name, targetInputId, containerIdOrEl) {
       { role: 'user', content: `Sugiere 8 emojis que representen visualmente una categoría llamada "${name}" para una app de comunicación aumentativa (AAC) para personas con TEA. Solo emojis, separados por espacios.` }
     ], 60);
     const emojis = result.trim().split(/\s+/).filter(e => e.length > 0).slice(0, 8);
-    container.innerHTML = emojis.map(e =>
-      `<button class="emoji-suggestion-btn" onclick="document.getElementById('${targetInputId}').value='${e}';this.closest('.emoji-suggestions').querySelectorAll('.emoji-suggestion-btn').forEach(b=>b.classList.remove('sel'));this.classList.add('sel')">${e}</button>`
-    ).join('');
+    container.innerHTML = '';
+    emojis.forEach(e => {
+      const btn = document.createElement('button');
+      btn.className = 'emoji-suggestion-btn';
+      btn.textContent = e;
+      btn.type = 'button';
+      btn.onclick = (ev) => {
+        ev.stopPropagation();
+        const inp = document.getElementById(targetInputId);
+        if (inp) inp.value = e;
+        container.querySelectorAll('.emoji-suggestion-btn').forEach(b => b.classList.remove('sel'));
+        btn.classList.add('sel');
+      };
+      container.appendChild(btn);
+    });
   } catch(err) {
     container.innerHTML = '';
   }
@@ -2833,7 +2900,7 @@ function renderAmbitosModal() {
         <div class="ambito-manage-cats">${catNames}</div>
       </div>
       <div class="ambito-manage-actions">
-        ${!amb.isGlobal ? `<button class="ambito-edit-btn" onclick="toggleEditAmbito('${amb.key}')">✏️</button>` : ''}
+        <button class="ambito-edit-btn" onclick="toggleEditAmbito('${amb.key}')">✏️</button>
         ${!amb.isGlobal ? `<button class="ambito-del-btn" onclick="deleteAmbito('${amb.key}')">🗑️</button>` : ''}
       </div>
     `;
@@ -2849,6 +2916,9 @@ function renderAmbitosModal() {
           <input class="ambito-name-emoji" id="edit-amb-emoji" type="text" value="${amb.emoji}" maxlength="2">
           <input class="ambito-name-input" id="edit-amb-name" type="text" value="${amb.name}" autocorrect="off">
         </div>
+        <div class="ambito-edit-panel-title" style="margin-top:6px;margin-bottom:4px;">Sugerencias de icono ✨</div>
+        <div class="emoji-suggestions" id="emoji-suggestions-amb-${amb.key}"></div>
+        ${!amb.isGlobal ? `
         <div class="ambito-edit-panel-title" style="margin-top:8px;">Categorías incluidas</div>
         ${categories.map(cat => {
           const on = (amb.cats || []).includes(cat.key);
@@ -2857,10 +2927,12 @@ function renderAmbitosModal() {
             <span class="ambito-cat-toggle-name">${cat.name}</span>
             <span class="ambito-cat-toggle-check">✓</span>
           </div>`;
-        }).join('')}
+        }).join('')}` : ''}
         <button class="ambito-save-btn" onclick="saveAmbitoEdit('${amb.key}')">💾 Guardar</button>
+        <button class="ambito-save-btn" style="background:#F8F6FF;color:var(--text-muted);box-shadow:none;margin-top:4px;border:1.5px solid #EDE9FF;" onclick="toggleEditAmbito(null)">Cancelar</button>
       `;
       body.appendChild(panel);
+      suggestEmojisAI(amb.name, 'edit-amb-emoji', `emoji-suggestions-amb-${amb.key}`);
     }
   });
 
@@ -2873,7 +2945,7 @@ function renderAmbitosModal() {
 }
 
 function toggleEditAmbito(key) {
-  editingAmbitoKey = editingAmbitoKey === key ? null : key;
+  editingAmbitoKey = (key === null || editingAmbitoKey === key) ? null : key;
   renderAmbitosModal();
 }
 
@@ -2929,6 +3001,67 @@ async function traducTEAConvertir() {
   btn.disabled = false;
   document.getElementById('traducTEA-btn-icon').className = '';
   document.getElementById('traducTEA-btn-icon').textContent = '✨';
+}
+
+// ---- IMPORT / EXPORT ----
+function exportarDatos() {
+  const data = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    categories: categories,
+    ambitos: ambitos,
+    db: DB,
+    frases: JSON.parse(localStorage.getItem('teayudo_frases') || '[]'),
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `TEAyudo_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importarDatos() {
+  document.getElementById('import-file-input').click();
+}
+
+function procesarImportacion(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.version || !data.categories || !data.db) {
+        alert('❌ El fichero no es válido o está corrupto.');
+        return;
+      }
+      if (!confirm(`¿Importar datos de ${new Date(data.exportedAt).toLocaleDateString()}?\nEsto reemplazará toda tu configuración actual.`)) return;
+
+      categories = data.categories || [];
+      ambitos    = data.ambitos    || [...DEFAULT_AMBITOS];
+      DB         = data.db         || {};
+      selected   = {};
+      categories.forEach(c => { selected[c.key] = []; });
+      if (!activeAmbito) activeAmbito = categories.length ? categories[0].key : 'global';
+
+      if (data.frases) localStorage.setItem('teayudo_frases', JSON.stringify(data.frases));
+      saveCategories();
+      saveAmbitos();
+      saveDB();
+
+      renderSectionsMain();
+      renderAmbitoBar();
+      updateResultButton();
+      closeSettings();
+      alert('✅ Datos importados correctamente.');
+    } catch(err) {
+      alert('❌ Error al leer el fichero: ' + err.message);
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
 }
 
 // ---- KEYBOARD ----
