@@ -1325,6 +1325,176 @@
   }
   .cat-add-btn:active { transform: scale(0.97); }
 
+  /* APP SWITCHER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    gap: 8px;
+  }
+  .app-switcher {
+    display: flex;
+    background: #EDE9FF;
+    border-radius: 20px;
+    padding: 3px;
+    gap: 2px;
+    flex: 1;
+    max-width: 260px;
+  }
+  .app-tab {
+    flex: 1;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 16px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-muted);
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .app-tab.active { background: #fff; color: var(--primary-dark); box-shadow: 0 2px 8px rgba(74,144,217,0.15); }
+
+  /* ÁMBITO BAR */
+  .ambito-bar {
+    padding: 4px 12px 8px;
+    background: var(--card-bg);
+    border-bottom: 1.5px solid #EDE9FF;
+  }
+  .ambito-scroll {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .ambito-scroll::-webkit-scrollbar { display: none; }
+  .ambito-chip {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #EDE9FF;
+    background: #fff;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    flex-shrink: 0;
+  }
+  .ambito-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .ambito-chip:active { opacity: 0.8; }
+
+  /* TRADUCATEA VIEW */
+  .traducTEA-wrap {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* CONFIG HUB */
+  .config-hub { display: flex; flex-direction: column; gap: 10px; padding: 4px 0; }
+  .config-hub-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: #F8F6FF;
+    border: 1.5px solid #EDE9FF;
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.12s, border-color 0.12s;
+    width: 100%;
+  }
+  .config-hub-btn:active { background: #EEF6FF; border-color: var(--primary); }
+  .config-hub-icon { font-size: 28px; flex-shrink: 0; }
+  .config-hub-label { font-size: 16px; font-weight: 800; color: var(--text); display: block; }
+  .config-hub-desc { font-size: 12px; font-weight: 600; color: var(--text-muted); display: block; margin-top: 2px; }
+
+  /* ÁMBITO MANAGE */
+  .ambito-manage-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #F8F6FF;
+    border-radius: 12px;
+    border: 1.5px solid #EDE9FF;
+    margin-bottom: 8px;
+  }
+  .ambito-manage-icon { font-size: 22px; flex-shrink: 0; }
+  .ambito-manage-info { flex: 1; min-width: 0; }
+  .ambito-manage-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .ambito-manage-cats { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+  .ambito-manage-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .ambito-edit-btn {
+    background: #EEF6FF;
+    border: 1.5px solid #C5DCEE;
+    color: var(--primary);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .ambito-del-btn {
+    background: #FFF0EE;
+    border: 1.5px solid #FFCFCC;
+    color: #E24B4A;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .global-badge {
+    font-size: 10px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+
+  /* ÁMBITO EDIT PANEL */
+  .ambito-edit-panel {
+    background: #F0EEFF;
+    border: 1.5px solid #C5BEFF;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .ambito-edit-panel-title { font-size: 12px; font-weight: 800; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .ambito-cat-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1.5px solid #EDE9FF;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .ambito-cat-toggle.on { border-color: var(--primary); background: #EEF6FF; }
+  .ambito-cat-toggle-emoji { font-size: 18px; }
+  .ambito-cat-toggle-name { flex: 1; font-size: 13px; font-weight: 700; color: var(--text); }
+  .ambito-cat-toggle-check { font-size: 16px; color: var(--primary); opacity: 0; transition: opacity 0.12s; }
+  .ambito-cat-toggle.on .ambito-cat-toggle-check { opacity: 1; }
+  .ambito-name-row { display: flex; gap: 8px; margin-bottom: 10px; }
+  .ambito-name-emoji { width: 48px; height: 40px; font-size: 20px; text-align: center; border: 2px solid #C5BEFF; border-radius: 10px; background: #fff; }
+  .ambito-name-input { flex: 1; height: 40px; padding: 0 12px; border: 2px solid #C5BEFF; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--text); background: #fff; outline: none; }
+  .ambito-save-btn { width: 100%; padding: 10px; background: linear-gradient(135deg, var(--primary), #7C5FBF); color: #fff; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer; margin-top: 10px; transition: transform 0.1s; }
+  .ambito-save-btn:active { transform: scale(0.97); }
+  .ambito-add-new-btn { width: 100%; padding: 9px; background: transparent; color: var(--text-muted); border: 1.5px dashed #C5BEFF; border-radius: 12px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 4px; transition: background 0.12s; }
+  .ambito-add-new-btn:active { background: #F0EEFF; }
+
 
 </style>
 </head>
@@ -1332,29 +1502,41 @@
 
 <!-- HEADER -->
 <header class="header">
-  <div class="logo">
-    <div class="logo-icon">🗣️</div>
-    <span class="logo-text">TEAyudo</span>
+  <div class="app-switcher">
+    <button class="app-tab active" id="tab-teayudo" onclick="switchApp('teayudo')">🗣️ TEAyudo</button>
+    <button class="app-tab" id="tab-traducTEA" onclick="switchApp('traducTEA')">🔤 TraducTEA</button>
   </div>
   <button class="settings-btn" onclick="openSettings()" aria-label="Configuración">⚙️</button>
 </header>
+<!-- ÁMBITO BAR (only in TEAyudo) -->
+<div class="ambito-bar" id="ambito-bar">
+  <div class="ambito-scroll" id="ambito-scroll"></div>
+</div>
 
-<!-- MAIN -->
-<main>
+<!-- MAIN TEAyudo -->
+<main id="view-teayudo">
   <div class="main">
-
     <div id="sections-container"></div>
-
   </div>
-
-  <!-- RESULTADO BUTTON -->
   <div class="resultado-wrap">
     <button class="resultado-btn" id="resultado-btn" onclick="hablar()" disabled>
       <span class="icon">🔊</span> Decir frase
     </button>
     <div class="ai-status" id="ai-status"></div>
     <button class="fav-btn" onclick="openFavModal()">⭐ Frases favoritas</button>
-    <button class="transcribe-btn" onclick="openTranscribeModal()">🔤 Transcribir a pictos</button>
+  </div>
+</main>
+
+<!-- MAIN TraducTEA -->
+<main id="view-traducTEA" style="display:none;">
+  <div class="traducTEA-wrap">
+    <div class="transcribe-input-wrap">
+      <textarea id="traducTEA-input" class="transcribe-textarea" placeholder="Escribe una frase… Ej: Quiero comer una manzana" rows="3"></textarea>
+      <button class="transcribe-go-btn" id="traducTEA-go-btn" onclick="traducTEAConvertir()">
+        <span id="traducTEA-btn-icon">✨</span> Convertir a pictos
+      </button>
+    </div>
+    <div id="traducTEA-result" class="transcribe-result"></div>
   </div>
 </main>
 
@@ -1370,7 +1552,7 @@
   <div class="picker-grid" id="picker-grid"></div>
 </div>
 
-<!-- ======================== SETTINGS MODAL ======================== -->
+<!-- ======================== SETTINGS MODAL (HUB) ======================== -->
 <div class="modal-overlay" id="settings-overlay" onclick="handleOverlayClick(event)">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -1379,16 +1561,41 @@
       <button class="modal-close" onclick="closeSettings()">✕</button>
     </div>
     <div class="modal-body">
+      <div class="config-hub">
+        <button class="config-hub-btn" onclick="closeSettings();openPictosModal()">
+          <span class="config-hub-icon">🖼️</span>
+          <span class="config-hub-label">Pictos</span>
+          <span class="config-hub-desc">Gestiona los pictogramas de cada categoría</span>
+        </button>
+        <button class="config-hub-btn" onclick="closeSettings();openManageCats()">
+          <span class="config-hub-icon">🏷️</span>
+          <span class="config-hub-label">Categorías</span>
+          <span class="config-hub-desc">Añade, edita o elimina categorías</span>
+        </button>
+        <button class="config-hub-btn" onclick="closeSettings();openAmbitosModal()">
+          <span class="config-hub-icon">🌐</span>
+          <span class="config-hub-label">Ámbitos</span>
+          <span class="config-hub-desc">Gestiona los contextos y sus categorías</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
-      <!-- SECCIÓN TABS (dinámico) -->
-      <div class="modal-section-tabs" id="modal-section-tabs"></div>
-      <button class="manage-cats-btn" onclick="openManageCats()">⚙️ Gestionar categorías</button>
-
-      <!-- FORMULARIO AÑADIR -->
+<!-- ======================== PICTOS MODAL ======================== -->
+<div class="modal-overlay" id="pictos-overlay" onclick="if(event.target===this)closePictosModal()">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">🖼️ Pictos</span>
+      <button class="modal-close" onclick="closePictosModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section-tabs" id="pictos-tabs"></div>
       <div class="add-form">
         <div>
           <label>Escribe la palabra</label>
-          <input type="text" id="search-input"  oninput="onSearchInput()" autocomplete="off" autocorrect="off" spellcheck="false">
+          <input type="text" id="search-input" oninput="onSearchInput()" autocomplete="off" autocorrect="off" spellcheck="false">
         </div>
         <div id="search-results-wrap">
           <label style="display:block;margin-bottom:6px;">Elige el pictograma</label>
@@ -1396,16 +1603,25 @@
             <span class="search-loading">Escribe una palabra para buscar pictogramas…</span>
           </div>
         </div>
-        <button class="add-btn" id="add-btn" onclick="addPicto()" disabled>➕ Añadir a la sección</button>
+        <button class="add-btn" id="add-btn" onclick="addPicto()" disabled>➕ Añadir a la categoría</button>
       </div>
-
-      <!-- LISTA GUARDADA -->
       <div id="saved-section">
         <div class="frases-title" style="margin-bottom:8px;">Pictogramas guardados</div>
         <div class="saved-list" id="saved-list"></div>
       </div>
-
     </div>
+  </div>
+</div>
+
+<!-- ======================== ÁMBITOS MODAL ======================== -->
+<div class="transcribe-overlay" id="ambitos-overlay" onclick="if(event.target===this)closeAmbitosModal()">
+  <div class="transcribe-modal">
+    <div class="modal-handle"></div>
+    <div class="fav-modal-header">
+      <span class="fav-modal-title">🌐 Ámbitos</span>
+      <button class="modal-close" onclick="closeAmbitosModal()">✕</button>
+    </div>
+    <div class="fav-modal-body" id="ambitos-body"></div>
   </div>
 </div>
 
@@ -1493,10 +1709,20 @@ const DEFAULT_CATEGORIES = [
   { key: 'lugar',     emoji: '📍', name: 'Lugares',        color: '#4ABFD9', bg: '#EEF9FF', text: '#006A8A', border: '#A0DCEE' },
 ];
 
+// ---- DEFAULT ÁMBITOS ----
+const DEFAULT_AMBITOS = [
+  { key: 'global',  emoji: '🌐', name: 'Global',  cats: null,  isGlobal: true  },
+  { key: 'hogar',   emoji: '🏠', name: 'Hogar',   cats: ['social','persona','accion','objeto','necesidad','comida','lugar'], isGlobal: false },
+  { key: 'medico',  emoji: '🏥', name: 'Médico',  cats: ['social','persona','accion','necesidad'], isGlobal: false },
+  { key: 'colegio', emoji: '🏫', name: 'Colegio', cats: ['social','persona','accion','objeto','lugar'], isGlobal: false },
+];
+
 // ---- STATE ----
 let DB = {};
 let selected = {};
 let categories = [];
+let ambitos = [];
+let activeAmbito = 'global';
 let currentTab = '';
 let currentPickerSection = null;
 let searchTimeout = null;
@@ -1506,10 +1732,16 @@ let selectedPreviewKeyword = null;
 let lastNaturalText = ''; // AI conjugated version
 
 // ---- RENDER MAIN SECTIONS ----
+function getActiveCats() {
+  const amb = ambitos.find(a => a.key === activeAmbito);
+  if (!amb || amb.isGlobal || !amb.cats) return categories;
+  return categories.filter(c => amb.cats.includes(c.key));
+}
+
 function renderSectionsMain() {
   const container = document.getElementById('sections-container');
   container.innerHTML = '';
-  categories.forEach(cat => {
+  getActiveCats().forEach(cat => {
     const card = document.createElement('div');
     card.className = 'section-card';
     card.innerHTML = `
@@ -1558,6 +1790,20 @@ function saveCategories() {
   localStorage.setItem('teayudo_categories', JSON.stringify(categories));
 }
 
+function saveAmbitos() {
+  localStorage.setItem('teayudo_ambitos', JSON.stringify(ambitos));
+}
+
+function loadAmbitos() {
+  const stored = localStorage.getItem('teayudo_ambitos');
+  if (stored) {
+    try { ambitos = JSON.parse(stored); } catch(e) { ambitos = [...DEFAULT_AMBITOS]; }
+  } else {
+    ambitos = [...DEFAULT_AMBITOS];
+  }
+  if (!activeAmbito) activeAmbito = ambitos[0].key;
+}
+
 function saveDB() {
   localStorage.setItem('teayudo_db', JSON.stringify(DB));
 }
@@ -1581,15 +1827,27 @@ function pictoUrl(id) {
 function openSettings() {
   document.getElementById('settings-overlay').classList.add('open');
   document.body.classList.add('no-scroll');
-  renderModalTabs();
+}
+
+function openPictosModal() {
+  if (!currentTab && categories.length) currentTab = categories[0].key;
+  document.getElementById('pictos-overlay').classList.add('open');
+  document.body.classList.add('no-scroll');
+  renderModalTabs('pictos-tabs');
   renderSavedList();
   resetAddForm();
 }
 
-function renderModalTabs() {
-  const container = document.getElementById('modal-section-tabs');
+function closePictosModal() {
+  document.getElementById('pictos-overlay').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+
+function renderModalTabs(containerId) {
+  const container = document.getElementById(containerId || 'modal-section-tabs');
+  if (!container) return;
   container.innerHTML = '';
-  categories.forEach((cat, i) => {
+  categories.forEach((cat) => {
     const btn = document.createElement('button');
     btn.className = 'tab-btn' + (cat.key === currentTab ? ' active' : '');
     btn.dataset.key = cat.key;
@@ -1613,8 +1871,7 @@ function handleOverlayClick(e) {
 function setModalTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  const active = document.querySelector(`.tab-btn[data-key="${tab}"]`);
-  if (active) active.classList.add('active');
+  document.querySelectorAll(`.tab-btn[data-key="${tab}"]`).forEach(b => b.classList.add('active'));
   renderSavedList();
   resetAddForm();
 }
@@ -1672,7 +1929,9 @@ function addPicto() {
   const word = document.getElementById('search-input').value.trim();
   const exists = DB[currentTab].find(p => p.id === selectedPreviewId);
   if (exists) { alert('Este pictograma ya está en la sección.'); return; }
-  DB[currentTab].push({ id: selectedPreviewId, url: selectedPreviewUrl, word: word || selectedPreviewKeyword });
+  // Use the keyword of the selected picto (e.g. "jugar a la pelota") not the search term
+  const pictoWord = selectedPreviewKeyword || word;
+  DB[currentTab].push({ id: selectedPreviewId, url: selectedPreviewUrl, word: pictoWord });
   saveDB();
   renderSavedList();
   resetAddForm();
@@ -2005,14 +2264,7 @@ function handleTranscribeOverlayClick(e) {
   if (e.target === document.getElementById('transcribe-overlay')) closeTranscribeModal();
 }
 
-async function transcribirFrase() {
-  const input = document.getElementById('transcribe-input').value.trim();
-  if (!input) return;
-
-  const btn = document.getElementById('transcribe-go-btn');
-  const resultDiv = document.getElementById('transcribe-result');
-  btn.disabled = true;
-  document.getElementById('transcribe-btn-icon').className = 'spinner';
+async function transcribirFraseToDiv(input, resultDiv) {
   resultDiv.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;font-weight:700;">🔍 Buscando pictogramas…</div>';
 
   try {
@@ -2058,13 +2310,22 @@ async function transcribirFrase() {
     renderTranscribeResult(resultDiv, found, input);
 
   } catch(e) {
-    console.error('transcribirFrase error:', e);
+    console.error('transcribirFraseToDiv error:', e);
     resultDiv.innerHTML = '<div class="transcribe-error">❌ Error inesperado. Revisa la consola.</div>';
-  } finally {
-    btn.disabled = false;
-    document.getElementById('transcribe-btn-icon').className = '';
-    document.getElementById('transcribe-btn-icon').textContent = '✨';
   }
+}
+
+async function transcribirFrase() {
+  const input = document.getElementById('transcribe-input').value.trim();
+  if (!input) return;
+  const btn = document.getElementById('transcribe-go-btn');
+  const resultDiv = document.getElementById('transcribe-result');
+  btn.disabled = true;
+  document.getElementById('transcribe-btn-icon').className = 'spinner';
+  await transcribirFraseToDiv(input, resultDiv);
+  btn.disabled = false;
+  document.getElementById('transcribe-btn-icon').className = '';
+  document.getElementById('transcribe-btn-icon').textContent = '✨';
 }
 
 function renderTranscribeResult(resultDiv, found, input) {
@@ -2423,6 +2684,174 @@ function deleteCategory(key) {
   if (currentTab) setModalTab(currentTab);
 }
 
+// ---- APP SWITCHER ----
+let currentApp = 'teayudo';
+
+function switchApp(app) {
+  currentApp = app;
+  document.getElementById('view-teayudo').style.display = app === 'teayudo' ? '' : 'none';
+  document.getElementById('view-traducTEA').style.display = app === 'traducTEA' ? '' : 'none';
+  document.getElementById('ambito-bar').style.display = app === 'teayudo' ? '' : 'none';
+  document.getElementById('tab-teayudo').classList.toggle('active', app === 'teayudo');
+  document.getElementById('tab-traducTEA').classList.toggle('active', app === 'traducTEA');
+  if (app === 'traducTEA') {
+    document.getElementById('traducTEA-result').innerHTML = '';
+    document.getElementById('traducTEA-input').value = '';
+  }
+}
+
+// ---- ÁMBITO BAR ----
+function renderAmbitoBar() {
+  const scroll = document.getElementById('ambito-scroll');
+  scroll.innerHTML = '';
+  ambitos.forEach(amb => {
+    const chip = document.createElement('button');
+    chip.className = 'ambito-chip' + (amb.key === activeAmbito ? ' active' : '');
+    chip.textContent = `${amb.emoji} ${amb.name}`;
+    chip.onclick = () => selectAmbito(amb.key);
+    scroll.appendChild(chip);
+  });
+}
+
+function selectAmbito(key) {
+  activeAmbito = key;
+  // Reset selections
+  categories.forEach(c => { selected[c.key] = []; });
+  updateResultButton();
+  renderAmbitoBar();
+  renderSectionsMain();
+}
+
+// ---- ÁMBITOS MODAL ----
+let editingAmbitoKey = null;
+
+function openAmbitosModal() {
+  document.getElementById('ambitos-overlay').classList.add('open');
+  document.body.classList.add('no-scroll');
+  renderAmbitosModal();
+}
+
+function closeAmbitosModal() {
+  document.getElementById('ambitos-overlay').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+  editingAmbitoKey = null;
+}
+
+function renderAmbitosModal() {
+  const body = document.getElementById('ambitos-body');
+  body.innerHTML = '';
+
+  ambitos.forEach(amb => {
+    const item = document.createElement('div');
+    item.className = 'ambito-manage-item';
+    const catNames = amb.isGlobal
+      ? 'Todas las categorías'
+      : (amb.cats || []).map(k => { const c = categories.find(x => x.key === k); return c ? c.emoji : ''; }).join(' ') || 'Sin categorías';
+    item.innerHTML = `
+      <div class="ambito-manage-icon">${amb.emoji}</div>
+      <div class="ambito-manage-info">
+        <div class="ambito-manage-name">${amb.name}${amb.isGlobal ? '<span class="global-badge">Global</span>' : ''}</div>
+        <div class="ambito-manage-cats">${catNames}</div>
+      </div>
+      <div class="ambito-manage-actions">
+        ${!amb.isGlobal ? `<button class="ambito-edit-btn" onclick="toggleEditAmbito('${amb.key}')">✏️</button>` : ''}
+        ${!amb.isGlobal ? `<button class="ambito-del-btn" onclick="deleteAmbito('${amb.key}')">🗑️</button>` : ''}
+      </div>
+    `;
+    body.appendChild(item);
+
+    // Inline edit panel
+    if (editingAmbitoKey === amb.key) {
+      const panel = document.createElement('div');
+      panel.className = 'ambito-edit-panel';
+      panel.innerHTML = `
+        <div class="ambito-edit-panel-title">Editar "${amb.name}"</div>
+        <div class="ambito-name-row">
+          <input class="ambito-name-emoji" id="edit-amb-emoji" type="text" value="${amb.emoji}" maxlength="2">
+          <input class="ambito-name-input" id="edit-amb-name" type="text" value="${amb.name}" autocorrect="off">
+        </div>
+        <div class="ambito-edit-panel-title" style="margin-top:8px;">Categorías incluidas</div>
+        ${categories.map(cat => {
+          const on = (amb.cats || []).includes(cat.key);
+          return `<div class="ambito-cat-toggle ${on ? 'on' : ''}" onclick="toggleAmbitocat('${amb.key}','${cat.key}')">
+            <span class="ambito-cat-toggle-emoji">${cat.emoji}</span>
+            <span class="ambito-cat-toggle-name">${cat.name}</span>
+            <span class="ambito-cat-toggle-check">✓</span>
+          </div>`;
+        }).join('')}
+        <button class="ambito-save-btn" onclick="saveAmbitoEdit('${amb.key}')">💾 Guardar</button>
+      `;
+      body.appendChild(panel);
+    }
+  });
+
+  // Add new ámbito button
+  const addBtn = document.createElement('button');
+  addBtn.className = 'ambito-add-new-btn';
+  addBtn.textContent = '➕ Nuevo ámbito';
+  addBtn.onclick = () => createNewAmbito();
+  body.appendChild(addBtn);
+}
+
+function toggleEditAmbito(key) {
+  editingAmbitoKey = editingAmbitoKey === key ? null : key;
+  renderAmbitosModal();
+}
+
+function toggleAmbitocat(ambitoKey, catKey) {
+  const amb = ambitos.find(a => a.key === ambitoKey);
+  if (!amb) return;
+  if (!amb.cats) amb.cats = [];
+  const idx = amb.cats.indexOf(catKey);
+  if (idx > -1) amb.cats.splice(idx, 1);
+  else amb.cats.push(catKey);
+  renderAmbitosModal();
+}
+
+function saveAmbitoEdit(key) {
+  const amb = ambitos.find(a => a.key === key);
+  if (!amb) return;
+  amb.emoji = document.getElementById('edit-amb-emoji').value.trim() || amb.emoji;
+  amb.name  = document.getElementById('edit-amb-name').value.trim() || amb.name;
+  editingAmbitoKey = null;
+  saveAmbitos();
+  renderAmbitosModal();
+  renderAmbitoBar();
+}
+
+function deleteAmbito(key) {
+  const amb = ambitos.find(a => a.key === key);
+  if (!confirm(`¿Eliminar el ámbito "${amb.name}"?`)) return;
+  ambitos = ambitos.filter(a => a.key !== key);
+  if (activeAmbito === key) activeAmbito = 'global';
+  saveAmbitos();
+  renderAmbitosModal();
+  renderAmbitoBar();
+}
+
+function createNewAmbito() {
+  const key = 'amb_' + Date.now();
+  ambitos.push({ key, emoji: '📋', name: 'Nuevo ámbito', cats: [], isGlobal: false });
+  editingAmbitoKey = key;
+  saveAmbitos();
+  renderAmbitosModal();
+}
+
+// ---- TRADUCATEA ----
+async function traducTEAConvertir() {
+  const input = document.getElementById('traducTEA-input').value.trim();
+  if (!input) return;
+  const btn = document.getElementById('traducTEA-go-btn');
+  const resultDiv = document.getElementById('traducTEA-result');
+  btn.disabled = true;
+  document.getElementById('traducTEA-btn-icon').className = 'spinner';
+  // Reuse the same logic as transcribirFrase but targeting TraducTEA divs
+  await transcribirFraseToDiv(input, resultDiv);
+  btn.disabled = false;
+  document.getElementById('traducTEA-btn-icon').className = '';
+  document.getElementById('traducTEA-btn-icon').textContent = '✨';
+}
+
 // ---- KEYBOARD ----
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
@@ -2434,6 +2863,8 @@ document.addEventListener('keydown', e => {
 
 // ---- BOOT ----
 loadDB();
+loadAmbitos();
+renderAmbitoBar();
 renderSectionsMain();
 updateResultButton();
 </script>
