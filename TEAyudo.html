@@ -1615,12 +1615,42 @@
           <span class="config-hub-label">Exportar datos</span>
           <span class="config-hub-desc">Guarda tu configuración en un fichero</span>
         </button>
-        <button class="config-hub-btn config-hub-btn-secondary" onclick="importarDatos()">
+        <button class="config-hub-btn config-hub-btn-secondary" onclick="openImportModal()">
           <span class="config-hub-icon">📥</span>
           <span class="config-hub-label">Importar datos</span>
-          <span class="config-hub-desc">Carga configuración desde un fichero</span>
+          <span class="config-hub-desc">Carga configuración desde fichero o portapapeles</span>
         </button>
         <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="procesarImportacion(event)">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== IMPORT MODAL ======================== -->
+<div class="modal-overlay" id="import-modal-overlay" onclick="if(event.target===this)closeImportModal()">
+  <div class="modal" style="height:auto;">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">📥 Importar datos</span>
+      <button class="modal-close" onclick="closeImportModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-muted);font-weight:600;margin-bottom:16px;">¿Cómo quieres importar tu configuración?</p>
+      <div class="config-hub">
+        <button class="config-hub-btn" onclick="closeImportModal();importarDatos()">
+          <span class="config-hub-icon">📁</span>
+          <div>
+            <span class="config-hub-label">Desde archivo</span>
+            <span class="config-hub-desc">Abre el fichero .json guardado</span>
+          </div>
+        </button>
+        <button class="config-hub-btn" onclick="closeImportModal();importarPortapapeles()">
+          <span class="config-hub-icon">📋</span>
+          <div>
+            <span class="config-hub-label">Desde portapapeles</span>
+            <span class="config-hub-desc">Pega el JSON copiado previamente</span>
+          </div>
+        </button>
       </div>
     </div>
   </div>
@@ -3003,6 +3033,19 @@ async function traducTEAConvertir() {
   document.getElementById('traducTEA-btn-icon').textContent = '✨';
 }
 
+// ---- IMPORT MODAL ----
+function openImportModal() {
+  closeSettings();
+  const overlay = document.getElementById('import-modal-overlay');
+  overlay.classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+
+function closeImportModal() {
+  document.getElementById('import-modal-overlay').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+
 // ---- IMPORT / EXPORT ----
 function exportarDatos() {
   const data = {
@@ -3020,6 +3063,45 @@ function exportarDatos() {
   a.download = `TEAyudo_backup_${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+async function importarPortapapeles() {
+  let texto = '';
+  try {
+    texto = await navigator.clipboard.readText();
+  } catch(err) {
+    // Fallback: prompt manual si el navegador bloquea el clipboard
+    texto = prompt('📋 Pega aquí el contenido del fichero JSON de TEAyudo:') || '';
+  }
+  texto = texto.trim();
+  if (!texto) return;
+  try {
+    const data = JSON.parse(texto);
+    if (!data.version || !data.categories || !data.db) {
+      alert('❌ El contenido no es un backup válido de TEAyudo.');
+      return;
+    }
+    if (!confirm(`¿Importar datos de ${new Date(data.exportedAt).toLocaleDateString()}?\nEsto reemplazará toda tu configuración actual.`)) return;
+
+    categories = data.categories || [];
+    ambitos    = data.ambitos    || [...DEFAULT_AMBITOS];
+    DB         = data.db         || {};
+    selected   = {};
+    categories.forEach(c => { selected[c.key] = []; });
+    if (!activeAmbito) activeAmbito = categories.length ? categories[0].key : 'global';
+
+    if (data.frases) localStorage.setItem('teayudo_frases', JSON.stringify(data.frases));
+    saveCategories();
+    saveAmbitos();
+    saveDB();
+
+    renderSectionsMain();
+    renderAmbitoBar();
+    updateResultButton();
+    alert('✅ Datos importados correctamente.');
+  } catch(err) {
+    alert('❌ El contenido no es JSON válido: ' + err.message);
+  }
 }
 
 function importarDatos() {
@@ -3067,7 +3149,8 @@ function procesarImportacion(event) {
 // ---- KEYBOARD ----
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
-    if (document.getElementById('picker-screen').classList.contains('open')) closePicker();
+    if (document.getElementById('import-modal-overlay').classList.contains('open')) closeImportModal();
+    else if (document.getElementById('picker-screen').classList.contains('open')) closePicker();
     else if (document.getElementById('fav-overlay').classList.contains('open')) closeFavModal();
     else closeSettings();
   }
