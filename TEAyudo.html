@@ -1521,6 +1521,68 @@
   .ambito-add-new-btn { width: 100%; padding: 9px; background: transparent; color: var(--text-muted); border: 1.5px dashed #C5BEFF; border-radius: 12px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 4px; transition: background 0.12s; }
   .ambito-add-new-btn:active { background: #F0EEFF; }
 
+  /* SUGGESTIONS BAR */
+  .suggestions-bar {
+    background: #fff;
+    border-top: 1.5px solid #EDE9FF;
+    border-bottom: 1.5px solid #EDE9FF;
+    padding: 8px 12px;
+  }
+  .suggestions-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+  }
+  .suggestions-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .suggestions-row::-webkit-scrollbar { display: none; }
+  .suggestion-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 12px;
+    border: 1.5px solid #EDE9FF;
+    background: #F8F6FF;
+    transition: background 0.12s, border-color 0.12s, transform 0.1s;
+    min-width: 64px;
+  }
+  .suggestion-chip:active { background: #EEF6FF; border-color: var(--primary); transform: scale(0.95); }
+  .suggestion-chip img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid #EDE9FF;
+  }
+  .suggestion-chip-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.2;
+    max-width: 60px;
+    word-break: break-word;
+  }
+  .suggestion-chip-score {
+    font-size: 9px;
+    color: var(--primary);
+    font-weight: 800;
+  }
+
+
 
 </style>
 </head>
@@ -1546,6 +1608,11 @@
 <main id="view-teayudo">
   <div class="main">
     <div id="sections-container"></div>
+  </div>
+  <!-- SUGERENCIAS PREDICTIVAS -->
+  <div class="suggestions-bar" id="suggestions-bar" style="display:none">
+    <div class="suggestions-label">💡 Sugerencias</div>
+    <div class="suggestions-row" id="suggestions-row"></div>
   </div>
   <div class="resultado-wrap">
     <button class="resultado-btn" id="resultado-btn" onclick="hablar()" disabled>
@@ -2136,6 +2203,7 @@ function updateResultButton() {
   document.getElementById('resultado-btn').disabled = !anySelected;
   const clearBtn = document.getElementById('clear-btn');
   if (clearBtn) clearBtn.style.display = anySelected ? '' : 'none';
+  renderSuggestions();
 }
 
 function limpiarSeleccion() {
@@ -2143,6 +2211,8 @@ function limpiarSeleccion() {
   renderSectionsMain();
   updateResultButton();
   document.getElementById('ai-status').textContent = '';
+  const bar = document.getElementById('suggestions-bar');
+  if (bar) bar.style.display = 'none';
 }
 
 // ---- AI CONJUGATION ----
@@ -2248,8 +2318,11 @@ function getFrasesData() {
 }
 
 function saveFrase(pictos, rawText, naturalText) {
+  // Record sequence for predictive engine
+  recordSequence(pictos);
+
   const frases = getFrasesData();
-  const key = rawText; // unique key by raw words
+  const key = rawText;
   const idx = frases.findIndex(f => f.key === key);
   if (idx > -1) {
     frases[idx].count = (frases[idx].count || 1) + 1;
@@ -2257,7 +2330,6 @@ function saveFrase(pictos, rawText, naturalText) {
   } else {
     frases.push({ key, text: rawText, naturalText, pictos: pictos.map(p => ({ url: p.url, word: p.word })), count: 1 });
   }
-  // Sort by count desc
   frases.sort((a, b) => (b.count || 1) - (a.count || 1));
   localStorage.setItem('teayudo_frases', JSON.stringify(frases.slice(0, 50)));
 }
@@ -3155,6 +3227,219 @@ document.addEventListener('keydown', e => {
     else closeSettings();
   }
 });
+
+// ════════════════════════════════════════
+// MOTOR PREDICTIVO
+// ════════════════════════════════════════
+
+// ── Storage helpers ──
+function getPredData() {
+  try { return JSON.parse(localStorage.getItem('teayudo_pred') || '{}'); }
+  catch(e) { return {}; }
+}
+function savePredData(d) {
+  localStorage.setItem('teayudo_pred', JSON.stringify(d));
+}
+
+// Estructura:
+// pred = {
+//   bigrams:  { "word1": { "word2": count } }
+//   trigrams: { "word1|word2": { "word3": count } }
+//   timeSlots:{ "word_HH": count }  (HH = 0..23)
+//   ambitoCtx:{ "ambito_word": count }
+//   recent:   [ { word, ts } ]  // últimas 20 palabras usadas
+//   wordCount:{ word: totalCount }
+// }
+
+function recordSequence(pictos) {
+  if (!pictos.length) return;
+  const pred = getPredData();
+  if (!pred.bigrams)   pred.bigrams   = {};
+  if (!pred.trigrams)  pred.trigrams  = {};
+  if (!pred.timeSlots) pred.timeSlots = {};
+  if (!pred.ambitoCtx) pred.ambitoCtx = {};
+  if (!pred.recent)    pred.recent    = [];
+  if (!pred.wordCount) pred.wordCount = {};
+
+  const words = pictos.map(p => p.word.toLowerCase());
+  const hour  = new Date().getHours();
+  const amb   = activeAmbito || 'global';
+
+  words.forEach((w, i) => {
+    // word count
+    pred.wordCount[w] = (pred.wordCount[w] || 0) + 1;
+
+    // time slot
+    const tKey = `${w}_${hour}`;
+    pred.timeSlots[tKey] = (pred.timeSlots[tKey] || 0) + 1;
+
+    // ambito context
+    const aKey = `${amb}_${w}`;
+    pred.ambitoCtx[aKey] = (pred.ambitoCtx[aKey] || 0) + 1;
+
+    // bigrams: w[i-1] -> w[i]
+    if (i > 0) {
+      const prev = words[i - 1];
+      if (!pred.bigrams[prev]) pred.bigrams[prev] = {};
+      pred.bigrams[prev][w] = (pred.bigrams[prev][w] || 0) + 1;
+    }
+
+    // trigrams: w[i-2]|w[i-1] -> w[i]
+    if (i > 1) {
+      const trig = `${words[i-2]}|${words[i-1]}`;
+      if (!pred.trigrams[trig]) pred.trigrams[trig] = {};
+      pred.trigrams[trig][w] = (pred.trigrams[trig][w] || 0) + 1;
+    }
+  });
+
+  // recent usage (keep last 40 words with timestamp)
+  words.forEach(w => {
+    pred.recent.unshift({ word: w, ts: Date.now() });
+  });
+  pred.recent = pred.recent.slice(0, 40);
+
+  savePredData(pred);
+}
+
+function getSuggestions(currentPictos) {
+  const pred = getPredData();
+  if (!pred.bigrams) return [];
+
+  const words = currentPictos.map(p => p.word.toLowerCase());
+  if (!words.length) return [];
+
+  const lastWord = words[words.length - 1];
+  const prevTwo  = words.length >= 2 ? `${words[words.length-2]}|${lastWord}` : null;
+  const hour     = new Date().getHours();
+  const amb      = activeAmbito || 'global';
+  const now      = Date.now();
+
+  // Gather all candidate words from DB (all pictos the user has)
+  const allPictos = {};
+  categories.forEach(c => {
+    (DB[c.key] || []).forEach(p => {
+      const w = p.word.toLowerCase();
+      if (!allPictos[w]) allPictos[w] = p;
+    });
+  });
+
+  const scores = {};
+
+  Object.entries(allPictos).forEach(([w, p]) => {
+    if (words.includes(w)) return; // ya seleccionado
+    let score = 0;
+
+    // ── Trigram score (highest weight) ──
+    if (prevTwo && pred.trigrams[prevTwo] && pred.trigrams[prevTwo][w]) {
+      score += pred.trigrams[prevTwo][w] * 3;
+    }
+
+    // ── Bigram score ──
+    if (pred.bigrams[lastWord] && pred.bigrams[lastWord][w]) {
+      score += pred.bigrams[lastWord][w] * 2;
+    }
+
+    // ── Time slot score ──
+    const tKey = `${w}_${hour}`;
+    if (pred.timeSlots[tKey]) {
+      score += pred.timeSlots[tKey] * 0.5;
+    }
+
+    // ── Ámbito context score ──
+    const aKey = `${amb}_${w}`;
+    if (pred.ambitoCtx[aKey]) {
+      score += pred.ambitoCtx[aKey] * 0.8;
+    }
+
+    // ── Recency score (exponential decay, half-life ~30 min) ──
+    if (pred.recent) {
+      pred.recent.forEach(r => {
+        if (r.word === w) {
+          const ageMin = (now - r.ts) / 60000;
+          score += Math.exp(-ageMin / 30) * 1.5;
+        }
+      });
+    }
+
+    // ── Global frequency (small weight) ──
+    if (pred.wordCount && pred.wordCount[w]) {
+      score += Math.log(pred.wordCount[w] + 1) * 0.3;
+    }
+
+    if (score > 0) scores[w] = { score, picto: p };
+  });
+
+  // Sort by score, return top 6
+  return Object.entries(scores)
+    .sort((a, b) => b[1].score - a[1].score)
+    .slice(0, 6)
+    .map(([w, v]) => ({ ...v.picto, _score: v.score }));
+}
+
+function renderSuggestions() {
+  const bar  = document.getElementById('suggestions-bar');
+  const row  = document.getElementById('suggestions-row');
+  if (!bar || !row) return;
+
+  // Collect all currently selected pictos in order
+  const currentPictos = [];
+  categories.forEach(c => {
+    (selected[c.key] || []).forEach(p => currentPictos.push(p));
+  });
+
+  if (!currentPictos.length) {
+    bar.style.display = 'none';
+    return;
+  }
+
+  const suggestions = getSuggestions(currentPictos);
+  if (!suggestions.length) {
+    bar.style.display = 'none';
+    return;
+  }
+
+  bar.style.display = '';
+  row.innerHTML = '';
+
+  suggestions.forEach(p => {
+    const chip = document.createElement('div');
+    chip.className = 'suggestion-chip';
+    chip.innerHTML = `
+      <img src="${p.url}" alt="${p.word}">
+      <div class="suggestion-chip-label">${p.word}</div>
+    `;
+    chip.onclick = () => addSuggestionPicto(p);
+    row.appendChild(chip);
+  });
+}
+
+function addSuggestionPicto(p) {
+  // Find which category this picto belongs to
+  let targetSection = null;
+  categories.forEach(c => {
+    if ((DB[c.key] || []).some(dbp => String(dbp.id) === String(p.id))) {
+      targetSection = c.key;
+    }
+  });
+  if (!targetSection) {
+    // Fallback: add to last category
+    targetSection = categories[categories.length - 1]?.key;
+  }
+  if (!targetSection) return;
+  if (!selected[targetSection]) selected[targetSection] = [];
+
+  // Avoid duplicates
+  if (selected[targetSection].some(s => String(s.id) === String(p.id))) return;
+
+  selected[targetSection].push(p);
+  updateSectionUI(targetSection);
+  updateResultButton();
+  renderSuggestions();
+}
+
+// ════════════════════════════════════════
+// END MOTOR PREDICTIVO
+// ════════════════════════════════════════
 
 // ---- BOOT ----
 loadDB();
