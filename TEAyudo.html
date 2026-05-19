@@ -1523,64 +1523,49 @@
 
   /* SUGGESTIONS BAR */
   .suggestions-bar {
-    background: #fff;
-    border-top: 1.5px solid #EDE9FF;
+    background: #F8F6FF;
     border-bottom: 1.5px solid #EDE9FF;
-    padding: 8px 12px;
-  }
-  .suggestions-label {
-    font-size: 10px;
-    font-weight: 800;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-bottom: 6px;
+    padding: 5px 12px;
   }
   .suggestions-row {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     overflow-x: auto;
     scrollbar-width: none;
-    padding-bottom: 2px;
+    align-items: center;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 1px;
   }
   .suggestions-row::-webkit-scrollbar { display: none; }
   .suggestion-chip {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     flex-shrink: 0;
     cursor: pointer;
-    padding: 6px 8px;
-    border-radius: 12px;
+    padding: 4px 8px 4px 4px;
+    border-radius: 20px;
     border: 1.5px solid #EDE9FF;
-    background: #F8F6FF;
+    background: #fff;
     transition: background 0.12s, border-color 0.12s, transform 0.1s;
-    min-width: 64px;
+    white-space: nowrap;
   }
   .suggestion-chip:active { background: #EEF6FF; border-color: var(--primary); transform: scale(0.95); }
   .suggestion-chip img {
-    width: 44px;
-    height: 44px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
-    border-radius: 8px;
-    background: #fff;
-    border: 1px solid #EDE9FF;
+    border-radius: 6px;
+    background: #F8F6FF;
   }
   .suggestion-chip-label {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--text);
-    text-align: center;
-    line-height: 1.2;
-    max-width: 60px;
-    word-break: break-word;
+    white-space: nowrap;
   }
-  .suggestion-chip-score {
-    font-size: 9px;
-    color: var(--primary);
-    font-weight: 800;
-  }
+  .suggestion-chip-score { display: none; }
 
 
 
@@ -1604,15 +1589,15 @@
   </div>
 </div>
 
+<!-- SUGERENCIAS PREDICTIVAS -->
+<div class="suggestions-bar" id="suggestions-bar" style="display:none">
+  <div class="suggestions-row" id="suggestions-row"></div>
+</div>
+
 <!-- MAIN TEAyudo -->
 <main id="view-teayudo">
   <div class="main">
     <div id="sections-container"></div>
-  </div>
-  <!-- SUGERENCIAS PREDICTIVAS -->
-  <div class="suggestions-bar" id="suggestions-bar" style="display:none">
-    <div class="suggestions-label">💡 Sugerencias</div>
-    <div class="suggestions-row" id="suggestions-row"></div>
   </div>
   <div class="resultado-wrap">
     <button class="resultado-btn" id="resultado-btn" onclick="hablar()" disabled>
